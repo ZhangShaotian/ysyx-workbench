@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <stdlib.h>
-#include <verilated_vcd_c.h>
+#include <verilated_fst_c.h>
 
   int main(int argc, char** argv) {
       VerilatedContext* contextp = new VerilatedContext;
@@ -11,10 +11,10 @@
       Vswitch* mySwitch = new Vswitch{contextp};
 
       //Enable trace
-      VerilatedVcdC *tfp = new VerilatedVcdC;
+      VerilatedFstC *tfp = new VerilatedFstC;
       contextp->traceEverOn(true);
       mySwitch->trace(tfp, 99);
-      tfp->open("waveform.vcd");
+      tfp->open("waveform.fst");
 
       while (!contextp->gotFinish() && contextp->time() < 500) { 
               int a = rand() & 1;
@@ -33,6 +33,7 @@
       }
       delete mySwitch;
       delete contextp;
+      tfp -> close();
       delete tfp;
       return 0;
   }
