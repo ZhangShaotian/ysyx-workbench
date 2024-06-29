@@ -11,7 +11,7 @@ SWITCH := $(SWITCH_DIR)/switch.v
 
 # Define Verilator command and symbol
 VERILATOR := verilator
-VERILATOR_FLAGS := --trace --cc --exe --build -j 0 -Wall
+VERILATOR_FLAGS := --trace-fst --cc --exe --build -j 0 -Wall
 TARGET := sim
 
 sim:
