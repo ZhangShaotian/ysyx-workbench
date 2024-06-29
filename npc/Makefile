@@ -22,8 +22,6 @@ sim:
 include ../Makefile
 
 clean:
-	rm -rf obj_dir
-	rm -f $(TARGET)
-
+	rm -rf $(MAIN_SWITCH_DIR)/obj_dir
 
 .PHONY: clean all sim
