@@ -6,7 +6,7 @@ MAIN_SWITCH_DIR := ./csrc
 SWITCH_DIR := ./vsrc
 
 # Define source files
-MAIN_SWITCH := $(SIM_MAIN_DIR)/main_switch.cpp
+MAIN_SWITCH := $(MAIN_SWITCH_DIR)/main_switch.cpp
 SWITCH := $(SWITCH_DIR)/switch.v
 
 # Define Verilator command and symbol
