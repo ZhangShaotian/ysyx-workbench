@@ -23,6 +23,6 @@ include ../Makefile
 
 clean:
 	rm -rf ./obj_dir
-	rm -f waveform.vcd
+	rm -f waveform.fst
 
 .PHONY: clean all sim
