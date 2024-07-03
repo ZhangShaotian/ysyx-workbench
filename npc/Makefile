@@ -1,5 +1,5 @@
-TOPNAME = top
-NXDC_FILES = constr/top.nxdc
+TOPNAME = top_module1
+NXDC_FILES = constr/top_module1.nxdc
 INC_PATH ?=
 
 VERILATOR = verilator
