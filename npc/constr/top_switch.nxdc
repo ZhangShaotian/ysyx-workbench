@@ -1,0 +1,5 @@
+top = top_switch
+
+led0 LD0
+sw0 SW0
+sw1 SW1

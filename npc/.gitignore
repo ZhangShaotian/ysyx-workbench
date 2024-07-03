@@ -10,4 +10,5 @@
 !.gitignore
 !README.md
 !constr/
+!constr/*
 build/
