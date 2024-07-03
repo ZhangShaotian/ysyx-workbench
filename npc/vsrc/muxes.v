@@ -3,15 +3,15 @@
 //==========================
 
 //--------------------------
-//2 to 1 mux
+//2 to 1 1-bit mux
 //--------------------------
-module mux2(
+module mux_2x1_1bit(
 	input a,
 	input b,
-	input s,
+	input sel,
 	output y
 );
 
-assign y = (~s&a)|(s&b);
+assign y = (~sel&a)|(sel&b);
 
 endmodule

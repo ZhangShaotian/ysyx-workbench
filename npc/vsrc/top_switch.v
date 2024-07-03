@@ -1,4 +1,4 @@
-module top_module1(
+module top_switch(
 	input clk,
 	input rst,
 	input sw0,
