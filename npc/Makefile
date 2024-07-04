@@ -1,5 +1,18 @@
-TOPNAME = top_switch
-NXDC_FILES = constr/top_switch.nxdc
+#####################################################
+# npc/Makefile
+# usage:
+# 	make / make all: At this moment, it is used to run one top module connected to NVBoard, not all of them
+#
+# 	make TOPNAME=XXXXX run: To execute the top module specified in TOPNAME
+#
+# 	make clean: Remove all temporary files
+#
+# Environment Variables:
+# 	TOPNAME: Arguments to select the correct verilog top_module in npc/vsrc/ folder
+# 	e.g. make TOPNAME=top_switch run
+
+TOPNAME ?=
+NXDC_FILES = constr/$(TOPNAME).nxdc
 INC_PATH ?=
 
 VERILATOR = verilator
@@ -10,7 +23,7 @@ BUILD_DIR = ./build
 OBJ_DIR = $(BUILD_DIR)/obj_dir
 BIN = $(BUILD_DIR)/$(TOPNAME)
 
-default: $(BIN)
+default: check_topname $(BIN)
 
 $(shell mkdir -p $(BUILD_DIR))
 
@@ -29,7 +42,7 @@ include $(NVBOARD_HOME)/scripts/nvboard.mk
 
 # rules for verilator
 INCFLAGS = $(addprefix -I, $(INC_PATH))
-CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
+CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\"" -DHEADER_NAME="\"V$(TOPNAME).h\""
 
 $(BIN): $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 	@rm -rf $(OBJ_DIR)
@@ -38,13 +51,18 @@ $(BIN): $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 		$(addprefix -CFLAGS , $(CXXFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
 
+# check if TOPNAME is defined or not, if not, display an error message
+check_topname:
+ifndef TOPNAME
+	$(error TOPNAME is not defined. Please define TOPNAME, e.g., make TOPNAME=top_module run)
+endif
+
 all: default
 
-run: $(BIN)
-	@$^
+run: check_topname $(BIN)
+	@$(BIN)
 
 clean:
 	rm -rf $(BUILD_DIR)
 
-.PHONY: default all clean run
-
+.PHONY: default all clean check_topname run

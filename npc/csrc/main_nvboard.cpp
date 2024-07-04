@@ -1,5 +1,10 @@
+//Added 'Vtop_module.h' file by using HEADER_NAME 
+#define STRINGIFY(x) #x
+#define TOSTRING(x) STRINGIFY(x)
+#define INCLUDE_FILE(x) TOSTRING(x)
+#include INCLUDE_FILE(HEADER_NAME)
+
 #include <nvboard.h>
-#include <Vtop_switch.h>
 
 static TOP_NAME dut;
 

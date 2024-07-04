@@ -8,7 +8,7 @@ module top_mux_2x1_1bit(
 
 );
 
-mux_2x1_1bit(
+mux_2x1_1bit mux_instance(
 	.a(sw0),
 	.b(sw1),
 	.sel(sw2),
