@@ -1,0 +1,889 @@
+/home/win/ysyx-workbench/
+├── abstract-machine
+│   ├── am
+│   │   ├── include
+│   │   │   ├── amdev.h
+│   │   │   ├── am.h
+│   │   │   └── arch
+│   │   │       ├── loongarch32r-nemu.h
+│   │   │       ├── mips32-nemu.h
+│   │   │       ├── native.h
+│   │   │       ├── riscv.h
+│   │   │       ├── x86_64-qemu.h
+│   │   │       ├── x86-nemu.h
+│   │   │       └── x86-qemu.h
+│   │   ├── Makefile
+│   │   └── src
+│   │       ├── loongarch
+│   │       │   ├── loongarch32r.h
+│   │       │   └── nemu
+│   │       │       ├── cte.c
+│   │       │       ├── start.S
+│   │       │       ├── trap.S
+│   │       │       └── vme.c
+│   │       ├── mips
+│   │       │   ├── mips32.h
+│   │       │   └── nemu
+│   │       │       ├── cte.c
+│   │       │       ├── start.S
+│   │       │       ├── trap.S
+│   │       │       └── vme.c
+│   │       ├── native
+│   │       │   ├── cte.c
+│   │       │   ├── ioe
+│   │       │   │   ├── audio.c
+│   │       │   │   ├── disk.c
+│   │       │   │   ├── gpu.c
+│   │       │   │   ├── input.c
+│   │       │   │   ├── timer.c
+│   │       │   │   └── uart.c
+│   │       │   ├── ioe.c
+│   │       │   ├── mpe.c
+│   │       │   ├── platform.c
+│   │       │   ├── platform.h
+│   │       │   ├── trap.S
+│   │       │   ├── trm.c
+│   │       │   └── vme.c
+│   │       ├── platform
+│   │       │   ├── dummy
+│   │       │   │   ├── cte.c
+│   │       │   │   ├── ioe.c
+│   │       │   │   ├── mpe.c
+│   │       │   │   ├── trm.c
+│   │       │   │   └── vme.c
+│   │       │   └── nemu
+│   │       │       ├── include
+│   │       │       │   └── nemu.h
+│   │       │       ├── ioe
+│   │       │       │   ├── audio.c
+│   │       │       │   ├── disk.c
+│   │       │       │   ├── gpu.c
+│   │       │       │   ├── input.c
+│   │       │       │   ├── ioe.c
+│   │       │       │   └── timer.c
+│   │       │       ├── mpe.c
+│   │       │       └── trm.c
+│   │       ├── riscv
+│   │       │   ├── nemu
+│   │       │   │   ├── cte.c
+│   │       │   │   ├── start.S
+│   │       │   │   ├── trap.S
+│   │       │   │   └── vme.c
+│   │       │   ├── npc
+│   │       │   │   ├── cte.c
+│   │       │   │   ├── input.c
+│   │       │   │   ├── ioe.c
+│   │       │   │   ├── libgcc
+│   │       │   │   │   ├── ashldi3.c
+│   │       │   │   │   ├── div.S
+│   │       │   │   │   ├── libgcc2.h
+│   │       │   │   │   ├── longlong.h
+│   │       │   │   │   ├── muldi3.S
+│   │       │   │   │   ├── multi3.c
+│   │       │   │   │   ├── riscv-asm.h
+│   │       │   │   │   └── unused.c
+│   │       │   │   ├── mpe.c
+│   │       │   │   ├── start.S
+│   │       │   │   ├── timer.c
+│   │       │   │   ├── trap.S
+│   │       │   │   ├── trm.c
+│   │       │   │   └── vme.c
+│   │       │   ├── riscv.h
+│   │       │   └── spike
+│   │       │       ├── atomic.h
+│   │       │       ├── htif.c
+│   │       │       ├── htif.h
+│   │       │       ├── ioe.c
+│   │       │       ├── linker.ld
+│   │       │       ├── start.S
+│   │       │       ├── timer.c
+│   │       │       └── trm.c
+│   │       └── x86
+│   │           ├── nemu
+│   │           │   ├── cte.c
+│   │           │   ├── start.S
+│   │           │   ├── trap.S
+│   │           │   └── vme.c
+│   │           ├── qemu
+│   │           │   ├── boot
+│   │           │   │   ├── genboot.py
+│   │           │   │   ├── main.c
+│   │           │   │   ├── Makefile
+│   │           │   │   └── start.S
+│   │           │   ├── cte.c
+│   │           │   ├── ioe.c
+│   │           │   ├── mpe.c
+│   │           │   ├── start32.S
+│   │           │   ├── start64.S
+│   │           │   ├── trap32.S
+│   │           │   ├── trap64.S
+│   │           │   ├── trm.c
+│   │           │   ├── vme.c
+│   │           │   └── x86-qemu.h
+│   │           └── x86.h
+│   ├── klib
+│   │   ├── include
+│   │   │   ├── klib.h
+│   │   │   └── klib-macros.h
+│   │   ├── Makefile
+│   │   └── src
+│   │       ├── cpp.c
+│   │       ├── int64.c
+│   │       ├── stdio.c
+│   │       ├── stdlib.c
+│   │       └── string.c
+│   ├── LICENSE
+│   ├── Makefile
+│   ├── README
+│   ├── scripts
+│   │   ├── isa
+│   │   │   ├── loongarch32r.mk
+│   │   │   ├── mips32.mk
+│   │   │   ├── riscv.mk
+│   │   │   ├── x86_64.mk
+│   │   │   └── x86.mk
+│   │   ├── linker.ld
+│   │   ├── loongarch32r-nemu.mk
+│   │   ├── mips32-nemu.mk
+│   │   ├── native.mk
+│   │   ├── platform
+│   │   │   ├── nemu.mk
+│   │   │   ├── npc.mk
+│   │   │   └── qemu.mk
+│   │   ├── riscv32e-nemu.mk
+│   │   ├── riscv32e-npc.mk
+│   │   ├── riscv32-nemu.mk
+│   │   ├── riscv64-nemu.mk
+│   │   ├── spike.mk
+│   │   ├── x86_64-qemu.mk
+│   │   ├── x86-nemu.mk
+│   │   └── x86-qemu.mk
+│   └── tools
+│       └── logisim-img.py
+├── fceux-am
+│   ├── Makefile
+│   ├── nes
+│   │   ├── build-roms.py
+│   │   └── rom
+│   │       └── README.md
+│   ├── README.md
+│   └── src
+│       ├── boards
+│       │   ├── 01-222.cpp
+│       │   ├── 09-034a.cpp
+│       │   ├── 103.cpp
+│       │   ├── 106.cpp
+│       │   ├── 108.cpp
+│       │   ├── 112.cpp
+│       │   ├── 116.cpp
+│       │   ├── 117.cpp
+│       │   ├── 120.cpp
+│       │   ├── 121.cpp
+│       │   ├── 12in1.cpp
+│       │   ├── 151.cpp
+│       │   ├── 156.cpp
+│       │   ├── 158B.cpp
+│       │   ├── 15.cpp
+│       │   ├── 164.cpp
+│       │   ├── 168.cpp
+│       │   ├── 170.cpp
+│       │   ├── 175.cpp
+│       │   ├── 176.cpp
+│       │   ├── 177.cpp
+│       │   ├── 178.cpp
+│       │   ├── 183.cpp
+│       │   ├── 185.cpp
+│       │   ├── 186.cpp
+│       │   ├── 187.cpp
+│       │   ├── 189.cpp
+│       │   ├── 18.cpp
+│       │   ├── 190.cpp
+│       │   ├── 193.cpp
+│       │   ├── 199.cpp
+│       │   ├── 206.cpp
+│       │   ├── 208.cpp
+│       │   ├── 222.cpp
+│       │   ├── 225.cpp
+│       │   ├── 228.cpp
+│       │   ├── 230.cpp
+│       │   ├── 232.cpp
+│       │   ├── 234.cpp
+│       │   ├── 235.cpp
+│       │   ├── 244.cpp
+│       │   ├── 246.cpp
+│       │   ├── 252.cpp
+│       │   ├── 253.cpp
+│       │   ├── 28.cpp
+│       │   ├── 32.cpp
+│       │   ├── 33.cpp
+│       │   ├── 34.cpp
+│       │   ├── 36.cpp
+│       │   ├── 3d-block.cpp
+│       │   ├── 40.cpp
+│       │   ├── 411120-c.cpp
+│       │   ├── 41.cpp
+│       │   ├── 42.cpp
+│       │   ├── 43.cpp
+│       │   ├── 46.cpp
+│       │   ├── 50.cpp
+│       │   ├── 51.cpp
+│       │   ├── 57.cpp
+│       │   ├── 603-5052.cpp
+│       │   ├── 62.cpp
+│       │   ├── 65.cpp
+│       │   ├── 67.cpp
+│       │   ├── 68.cpp
+│       │   ├── 69.cpp
+│       │   ├── 71.cpp
+│       │   ├── 72.cpp
+│       │   ├── 77.cpp
+│       │   ├── 79.cpp
+│       │   ├── 80013-B.cpp
+│       │   ├── 80.cpp
+│       │   ├── 8157.cpp
+│       │   ├── 8237.cpp
+│       │   ├── 82.cpp
+│       │   ├── 830118C.cpp
+│       │   ├── 88.cpp
+│       │   ├── 8in1.cpp
+│       │   ├── 90.cpp
+│       │   ├── 91.cpp
+│       │   ├── 96.cpp
+│       │   ├── 99.cpp
+│       │   ├── a9746.cpp
+│       │   ├── ac-08.cpp
+│       │   ├── addrlatch.cpp
+│       │   ├── ax5705.cpp
+│       │   ├── bandai.cpp
+│       │   ├── bb.cpp
+│       │   ├── bmc13in1jy110.cpp
+│       │   ├── bmc42in1r.cpp
+│       │   ├── bmc64in1nr.cpp
+│       │   ├── bmc70in1.cpp
+│       │   ├── BMW8544.cpp
+│       │   ├── bonza.cpp
+│       │   ├── bs-5.cpp
+│       │   ├── cheapocabra.cpp
+│       │   ├── cityfighter.cpp
+│       │   ├── coolboy.cpp
+│       │   ├── dance2000.cpp
+│       │   ├── datalatch.cpp
+│       │   ├── dream.cpp
+│       │   ├── edu2000.cpp
+│       │   ├── eh8813a.cpp
+│       │   ├── emu2413.c
+│       │   ├── emu2413.h
+│       │   ├── et-100.cpp
+│       │   ├── et-4320.cpp
+│       │   ├── F-15.cpp
+│       │   ├── famicombox.cpp
+│       │   ├── ffe.cpp
+│       │   ├── fk23c.cpp
+│       │   ├── ghostbusters63in1.cpp
+│       │   ├── gs-2004.cpp
+│       │   ├── gs-2013.cpp
+│       │   ├── h2288.cpp
+│       │   ├── hp10xx_hp20xx.cpp
+│       │   ├── hp898f.cpp
+│       │   ├── inlnsf.cpp
+│       │   ├── karaoke.cpp
+│       │   ├── kof97.cpp
+│       │   ├── ks7010.cpp
+│       │   ├── ks7012.cpp
+│       │   ├── ks7013.cpp
+│       │   ├── ks7016.cpp
+│       │   ├── ks7017.cpp
+│       │   ├── ks7030.cpp
+│       │   ├── ks7031.cpp
+│       │   ├── ks7032.cpp
+│       │   ├── ks7037.cpp
+│       │   ├── ks7057.cpp
+│       │   ├── le05.cpp
+│       │   ├── lh32.cpp
+│       │   ├── lh53.cpp
+│       │   ├── malee.cpp
+│       │   ├── mapinc.h
+│       │   ├── mihunche.cpp
+│       │   ├── mmc1.cpp
+│       │   ├── mmc2and4.cpp
+│       │   ├── mmc3.cpp
+│       │   ├── mmc3.h
+│       │   ├── mmc5.cpp
+│       │   ├── n106.cpp
+│       │   ├── n625092.cpp
+│       │   ├── novel.cpp
+│       │   ├── onebus.cpp
+│       │   ├── pec-586.cpp
+│       │   ├── rt-01.cpp
+│       │   ├── sa-9602b.cpp
+│       │   ├── sachen.cpp
+│       │   ├── sb-2000.cpp
+│       │   ├── sc-127.cpp
+│       │   ├── sheroes.cpp
+│       │   ├── sl1632.cpp
+│       │   ├── subor.cpp
+│       │   ├── super24.cpp
+│       │   ├── supervision.cpp
+│       │   ├── t-227-1.cpp
+│       │   ├── t-262.cpp
+│       │   ├── tengen.cpp
+│       │   ├── tf-1201.cpp
+│       │   ├── transformer.cpp
+│       │   ├── unrom512.cpp
+│       │   ├── vrc1.cpp
+│       │   ├── vrc2and4.cpp
+│       │   ├── vrc3.cpp
+│       │   ├── vrc5.cpp
+│       │   ├── vrc6.cpp
+│       │   ├── vrc7.cpp
+│       │   ├── vrc7p.cpp
+│       │   └── yoko.cpp
+│       ├── cart.cpp
+│       ├── cart.h
+│       ├── config.h
+│       ├── COPYING
+│       ├── drawing.cpp
+│       ├── drawing.h
+│       ├── driver.h
+│       ├── drivers
+│       │   ├── common
+│       │   │   ├── vidblit.cpp
+│       │   │   └── vidblit.h
+│       │   └── sdl
+│       │       ├── dface.h
+│       │       ├── input.cpp
+│       │       ├── input.h
+│       │       ├── keyscan.h
+│       │       ├── main.h
+│       │       ├── sdl.cpp
+│       │       ├── sdl.h
+│       │       ├── sdl-icon.h
+│       │       ├── sdl-sound.cpp
+│       │       ├── sdl-throttle.cpp
+│       │       ├── sdl-video.cpp
+│       │       ├── sdl-video.h
+│       │       └── throttle.h
+│       ├── emufile.cpp
+│       ├── emufile.h
+│       ├── fceu.cpp
+│       ├── fceu.h
+│       ├── fcoeffs.h
+│       ├── file.cpp
+│       ├── file.h
+│       ├── filter.cpp
+│       ├── filter.h
+│       ├── fir
+│       │   ├── c44100ntsc.h
+│       │   ├── c44100pal.h
+│       │   ├── c48000ntsc.h
+│       │   ├── c48000pal.h
+│       │   ├── c96000ntsc.h
+│       │   ├── c96000pal.h
+│       │   └── README
+│       ├── git.h
+│       ├── ines-bad.h
+│       ├── ines-correct.h
+│       ├── ines.cpp
+│       ├── ines.h
+│       ├── input.cpp
+│       ├── input.h
+│       ├── ops.inc
+│       ├── palette.cpp
+│       ├── palette.h
+│       ├── palettes
+│       │   ├── palettes.h
+│       │   ├── rp2c04001.h
+│       │   ├── rp2c04002.h
+│       │   ├── rp2c04003.h
+│       │   └── rp2c05004.h
+│       ├── ppu.cpp
+│       ├── ppu.h
+│       ├── pputile.inc
+│       ├── sound.cpp
+│       ├── sound.h
+│       ├── state.h
+│       ├── types.h
+│       ├── unif.h
+│       ├── unused.cpp
+│       ├── utils
+│       │   ├── general.cpp
+│       │   ├── general.h
+│       │   ├── md5.cpp
+│       │   ├── md5.h
+│       │   ├── memory.cpp
+│       │   ├── memory.h
+│       │   └── valuearray.h
+│       ├── version.h
+│       ├── video.cpp
+│       ├── video.h
+│       ├── x6502abbrev.h
+│       ├── x6502.cpp
+│       ├── x6502.h
+│       └── x6502struct.h
+├── init.sh
+├── Makefile
+├── nemu
+│   ├── configs
+│   │   ├── mips32-am_defconfig
+│   │   ├── riscv32-am_defconfig
+│   │   └── riscv64-am_defconfig
+│   ├── include
+│   │   ├── common.h
+│   │   ├── config
+│   │   │   ├── auto.conf
+│   │   │   ├── auto.conf.cmd
+│   │   │   ├── cc
+│   │   │   │   ├── gcc.h
+│   │   │   │   ├── o2.h
+│   │   │   │   └── opt.h
+│   │   │   ├── cc.h
+│   │   │   ├── difftest
+│   │   │   │   └── ref
+│   │   │   │       ├── name.h
+│   │   │   │       └── path.h
+│   │   │   ├── engine
+│   │   │   │   └── interpreter.h
+│   │   │   ├── engine.h
+│   │   │   ├── isa
+│   │   │   │   └── riscv.h
+│   │   │   ├── isa.h
+│   │   │   ├── itrace
+│   │   │   │   └── cond.h
+│   │   │   ├── itrace.h
+│   │   │   ├── mbase.h
+│   │   │   ├── mem
+│   │   │   │   └── random.h
+│   │   │   ├── mode
+│   │   │   │   └── system.h
+│   │   │   ├── msize.h
+│   │   │   ├── pc
+│   │   │   │   └── reset
+│   │   │   │       └── offset.h
+│   │   │   ├── pmem
+│   │   │   │   └── garray.h
+│   │   │   ├── rt
+│   │   │   │   └── check.h
+│   │   │   ├── target
+│   │   │   │   └── native
+│   │   │   │       └── elf.h
+│   │   │   ├── timer
+│   │   │   │   └── gettimeofday.h
+│   │   │   ├── trace
+│   │   │   │   ├── end.h
+│   │   │   │   └── start.h
+│   │   │   └── trace.h
+│   │   ├── cpu
+│   │   │   ├── cpu.h
+│   │   │   ├── decode.h
+│   │   │   ├── difftest.h
+│   │   │   └── ifetch.h
+│   │   ├── debug.h
+│   │   ├── device
+│   │   │   ├── alarm.h
+│   │   │   ├── map.h
+│   │   │   └── mmio.h
+│   │   ├── difftest-def.h
+│   │   ├── generated
+│   │   │   └── autoconf.h
+│   │   ├── isa.h
+│   │   ├── macro.h
+│   │   ├── memory
+│   │   │   ├── host.h
+│   │   │   ├── paddr.h
+│   │   │   └── vaddr.h
+│   │   └── utils.h
+│   ├── Kconfig
+│   ├── LICENSE
+│   ├── Makefile
+│   ├── README.md
+│   ├── resource
+│   │   ├── debian
+│   │   │   └── README.md
+│   │   ├── mips-elf
+│   │   │   └── README.md
+│   │   └── sdcard
+│   │       ├── nemu.c
+│   │       └── README.md
+│   ├── scripts
+│   │   ├── build.mk
+│   │   ├── config.mk
+│   │   └── native.mk
+│   ├── src
+│   │   ├── am-bin.S
+│   │   ├── cpu
+│   │   │   ├── cpu-exec.c
+│   │   │   └── difftest
+│   │   │       ├── dut.c
+│   │   │       └── ref.c
+│   │   ├── device
+│   │   │   ├── alarm.c
+│   │   │   ├── audio.c
+│   │   │   ├── device.c
+│   │   │   ├── disk.c
+│   │   │   ├── filelist.mk
+│   │   │   ├── intr.c
+│   │   │   ├── io
+│   │   │   │   ├── map.c
+│   │   │   │   ├── mmio.c
+│   │   │   │   └── port-io.c
+│   │   │   ├── Kconfig
+│   │   │   ├── keyboard.c
+│   │   │   ├── mmc.h
+│   │   │   ├── sdcard.c
+│   │   │   ├── serial.c
+│   │   │   ├── timer.c
+│   │   │   └── vga.c
+│   │   ├── engine
+│   │   │   ├── filelist.mk
+│   │   │   └── interpreter
+│   │   │       ├── hostcall.c
+│   │   │       └── init.c
+│   │   ├── filelist.mk
+│   │   ├── isa
+│   │   │   ├── filelist.mk
+│   │   │   ├── loongarch32r
+│   │   │   │   ├── difftest
+│   │   │   │   │   └── dut.c
+│   │   │   │   ├── include
+│   │   │   │   │   └── isa-def.h
+│   │   │   │   ├── init.c
+│   │   │   │   ├── inst.c
+│   │   │   │   ├── local-include
+│   │   │   │   │   └── reg.h
+│   │   │   │   ├── logo.c
+│   │   │   │   ├── reg.c
+│   │   │   │   └── system
+│   │   │   │       ├── intr.c
+│   │   │   │       └── mmu.c
+│   │   │   ├── mips32
+│   │   │   │   ├── difftest
+│   │   │   │   │   └── dut.c
+│   │   │   │   ├── include
+│   │   │   │   │   └── isa-def.h
+│   │   │   │   ├── init.c
+│   │   │   │   ├── inst.c
+│   │   │   │   ├── local-include
+│   │   │   │   │   └── reg.h
+│   │   │   │   ├── logo.c
+│   │   │   │   ├── reg.c
+│   │   │   │   └── system
+│   │   │   │       ├── intr.c
+│   │   │   │       └── mmu.c
+│   │   │   ├── riscv32
+│   │   │   │   ├── difftest
+│   │   │   │   │   └── dut.c
+│   │   │   │   ├── include
+│   │   │   │   │   └── isa-def.h
+│   │   │   │   ├── init.c
+│   │   │   │   ├── inst.c
+│   │   │   │   ├── Kconfig
+│   │   │   │   ├── local-include
+│   │   │   │   │   └── reg.h
+│   │   │   │   ├── logo.c
+│   │   │   │   ├── reg.c
+│   │   │   │   └── system
+│   │   │   │       ├── intr.c
+│   │   │   │       └── mmu.c
+│   │   │   └── riscv64 -> riscv32
+│   │   ├── memory
+│   │   │   ├── Kconfig
+│   │   │   ├── paddr.c
+│   │   │   └── vaddr.c
+│   │   ├── monitor
+│   │   │   ├── monitor.c
+│   │   │   └── sdb
+│   │   │       ├── expr.c
+│   │   │       ├── sdb.c
+│   │   │       ├── sdb.h
+│   │   │       └── watchpoint.c
+│   │   ├── nemu-main.c
+│   │   └── utils
+│   │       ├── disasm.cc
+│   │       ├── filelist.mk
+│   │       ├── log.c
+│   │       ├── state.c
+│   │       └── timer.c
+│   └── tools
+│       ├── difftest.mk
+│       ├── fixdep
+│       │   ├── build
+│       │   │   ├── fixdep
+│       │   │   └── obj-fixdep
+│       │   │       ├── fixdep.d
+│       │   │       └── fixdep.o
+│       │   ├── fixdep.c
+│       │   └── Makefile
+│       ├── gen-expr
+│       │   ├── gen-expr.c
+│       │   └── Makefile
+│       ├── kconfig
+│       │   ├── build
+│       │   │   ├── conf
+│       │   │   ├── lexer.lex.c
+│       │   │   ├── mconf
+│       │   │   ├── obj-conf
+│       │   │   │   ├── build
+│       │   │   │   │   ├── lexer.lex.d
+│       │   │   │   │   ├── lexer.lex.o
+│       │   │   │   │   ├── parser.tab.d
+│       │   │   │   │   └── parser.tab.o
+│       │   │   │   ├── conf.d
+│       │   │   │   ├── confdata.d
+│       │   │   │   ├── confdata.o
+│       │   │   │   ├── conf.o
+│       │   │   │   ├── expr.d
+│       │   │   │   ├── expr.o
+│       │   │   │   ├── preprocess.d
+│       │   │   │   ├── preprocess.o
+│       │   │   │   ├── symbol.d
+│       │   │   │   ├── symbol.o
+│       │   │   │   ├── util.d
+│       │   │   │   └── util.o
+│       │   │   ├── obj-mconf
+│       │   │   │   ├── build
+│       │   │   │   │   ├── lexer.lex.d
+│       │   │   │   │   ├── lexer.lex.o
+│       │   │   │   │   ├── parser.tab.d
+│       │   │   │   │   └── parser.tab.o
+│       │   │   │   ├── confdata.d
+│       │   │   │   ├── confdata.o
+│       │   │   │   ├── expr.d
+│       │   │   │   ├── expr.o
+│       │   │   │   ├── lxdialog
+│       │   │   │   │   ├── checklist.d
+│       │   │   │   │   ├── checklist.o
+│       │   │   │   │   ├── inputbox.d
+│       │   │   │   │   ├── inputbox.o
+│       │   │   │   │   ├── menubox.d
+│       │   │   │   │   ├── menubox.o
+│       │   │   │   │   ├── textbox.d
+│       │   │   │   │   ├── textbox.o
+│       │   │   │   │   ├── util.d
+│       │   │   │   │   ├── util.o
+│       │   │   │   │   ├── yesno.d
+│       │   │   │   │   └── yesno.o
+│       │   │   │   ├── mconf.d
+│       │   │   │   ├── mconf.o
+│       │   │   │   ├── preprocess.d
+│       │   │   │   ├── preprocess.o
+│       │   │   │   ├── symbol.d
+│       │   │   │   ├── symbol.o
+│       │   │   │   ├── util.d
+│       │   │   │   └── util.o
+│       │   │   ├── parser.output
+│       │   │   ├── parser.tab.c
+│       │   │   └── parser.tab.h
+│       │   ├── conf.c
+│       │   ├── confdata.c
+│       │   ├── expr.c
+│       │   ├── expr.h
+│       │   ├── lexer.l
+│       │   ├── list.h
+│       │   ├── lkc.h
+│       │   ├── lkc_proto.h
+│       │   ├── lxdialog
+│       │   │   ├── checklist.c
+│       │   │   ├── dialog.h
+│       │   │   ├── inputbox.c
+│       │   │   ├── menubox.c
+│       │   │   ├── textbox.c
+│       │   │   ├── util.c
+│       │   │   └── yesno.c
+│       │   ├── Makefile
+│       │   ├── mconf.c
+│       │   ├── menu.c
+│       │   ├── parser.y
+│       │   ├── preprocess.c
+│       │   ├── symbol.c
+│       │   └── util.c
+│       ├── kvm-diff
+│       │   ├── include
+│       │   │   └── paddr.h
+│       │   ├── Makefile
+│       │   └── src
+│       │       └── kvm.c
+│       ├── qemu-diff
+│       │   ├── include
+│       │   │   ├── common.h
+│       │   │   ├── isa.h
+│       │   │   └── protocol.h
+│       │   ├── Makefile
+│       │   └── src
+│       │       ├── diff-test.c
+│       │       ├── gdb-host.c
+│       │       ├── isa.c
+│       │       └── protocol.c
+│       └── spike-diff
+│           ├── difftest.cc
+│           └── Makefile
+├── npc
+│   ├── constr
+│   │   └── top.nxdc
+│   ├── csrc
+│   │   └── main_nvboard.cpp
+│   ├── Makefile
+│   └── vsrc
+│       ├── muxes.v
+│       ├── switch.v
+│       └── top.v
+├── nvboard
+│   ├── board
+│   │   └── N4
+│   ├── build
+│   │   ├── button.d
+│   │   ├── button.o
+│   │   ├── component.d
+│   │   ├── component.o
+│   │   ├── event.d
+│   │   ├── event.o
+│   │   ├── font.d
+│   │   ├── font.o
+│   │   ├── keyboard.d
+│   │   ├── keyboard.o
+│   │   ├── led.d
+│   │   ├── led.o
+│   │   ├── nvboard.a
+│   │   ├── nvboard.d
+│   │   ├── nvboard.o
+│   │   ├── render.d
+│   │   ├── render.o
+│   │   ├── segs7.d
+│   │   ├── segs7.o
+│   │   ├── switch.d
+│   │   ├── switch.o
+│   │   ├── term.d
+│   │   ├── term.o
+│   │   ├── timer.d
+│   │   ├── timer.o
+│   │   ├── uart.d
+│   │   ├── uart.o
+│   │   ├── vga.d
+│   │   └── vga.o
+│   ├── example
+│   │   ├── constr
+│   │   │   └── top.nxdc
+│   │   ├── csrc
+│   │   │   └── main.cpp
+│   │   ├── Makefile
+│   │   ├── README.md
+│   │   ├── resource
+│   │   │   └── picture.hex
+│   │   └── vsrc
+│   │       ├── led.v
+│   │       ├── ps2_keyboard.v
+│   │       ├── seg.v
+│   │       ├── top.v
+│   │       ├── uart.v
+│   │       └── vga_ctrl.v
+│   ├── include
+│   │   ├── component.h
+│   │   ├── configs.h
+│   │   ├── font.h
+│   │   ├── keyboard.h
+│   │   ├── macro.h
+│   │   ├── nvboard.h
+│   │   ├── pins.h
+│   │   ├── render.h
+│   │   ├── term.h
+│   │   ├── uart.h
+│   │   └── vga.h
+│   ├── LICENSE
+│   ├── NVBoard.jpg
+│   ├── README.md
+│   ├── resources
+│   │   ├── font
+│   │   │   └── FreeMono.ttf
+│   │   └── pic
+│   │       ├── vbtn_off.png
+│   │       ├── vbtn_on.png
+│   │       ├── vsw_off.png
+│   │       └── vsw_on.png
+│   ├── scripts
+│   │   ├── auto_pin_bind.py
+│   │   └── nvboard.mk
+│   ├── src
+│   │   ├── at_scancode.h
+│   │   ├── button.cpp
+│   │   ├── component.cpp
+│   │   ├── event.cpp
+│   │   ├── font.cpp
+│   │   ├── keyboard.cpp
+│   │   ├── led.cpp
+│   │   ├── nvboard.cpp
+│   │   ├── render.cpp
+│   │   ├── segs7.cpp
+│   │   ├── switch.cpp
+│   │   ├── term.cpp
+│   │   ├── timer.cpp
+│   │   ├── uart.cpp
+│   │   └── vga.cpp
+│   └── usr
+│       └── include
+│           ├── nvboard.h
+│           └── pins.h
+├── README.md
+├── temp
+│   └── npc_nvboard
+│       ├── build
+│       │   ├── auto_bind.cpp
+│       │   └── obj_dir
+│       │       ├── auto_bind.d
+│       │       ├── auto_bind.o
+│       │       ├── main_nvboard.d
+│       │       ├── main_nvboard.o
+│       │       ├── Vtop___024root__DepSet_h84412442__0.cpp
+│       │       ├── Vtop___024root__DepSet_h84412442__0__Slow.cpp
+│       │       ├── Vtop___024root__DepSet_heccd7ead__0.cpp
+│       │       ├── Vtop___024root__DepSet_heccd7ead__0__Slow.cpp
+│       │       ├── Vtop___024root.h
+│       │       ├── Vtop___024root__Slow.cpp
+│       │       ├── Vtop_classes.mk
+│       │       ├── Vtop.cpp
+│       │       ├── Vtop.h
+│       │       ├── Vtop.mk
+│       │       ├── Vtop__Syms.cpp
+│       │       ├── Vtop__Syms.h
+│       │       ├── Vtop__ver.d
+│       │       └── Vtop__verFiles.dat
+│       ├── constr
+│       │   └── top.nxdc
+│       ├── csrc
+│       │   ├── main_nvboard.cpp
+│       │   └── main_verilator.cpp
+│       ├── Makefile
+│       ├── Makefile_verilator
+│       ├── obj_dir
+│       │   ├── main_verilator.d
+│       │   ├── main_verilator.o
+│       │   ├── verilated.d
+│       │   ├── verilated_fst_c.d
+│       │   ├── verilated_fst_c.o
+│       │   ├── verilated.o
+│       │   ├── verilated_threads.d
+│       │   ├── verilated_threads.o
+│       │   ├── Vswitch___024root__DepSet_h177670c3__0.cpp
+│       │   ├── Vswitch___024root__DepSet_h177670c3__0__Slow.cpp
+│       │   ├── Vswitch___024root__DepSet_h6f3f0016__0.cpp
+│       │   ├── Vswitch___024root__DepSet_h6f3f0016__0__Slow.cpp
+│       │   ├── Vswitch___024root.h
+│       │   ├── Vswitch___024root__Slow.cpp
+│       │   ├── Vswitch__ALL.a
+│       │   ├── Vswitch__ALL.cpp
+│       │   ├── Vswitch__ALL.d
+│       │   ├── Vswitch__ALL.o
+│       │   ├── Vswitch_classes.mk
+│       │   ├── Vswitch.cpp
+│       │   ├── Vswitch.h
+│       │   ├── Vswitch.mk
+│       │   ├── Vswitch__Syms.cpp
+│       │   ├── Vswitch__Syms.h
+│       │   ├── Vswitch__Trace__0.cpp
+│       │   ├── Vswitch__Trace__0__Slow.cpp
+│       │   ├── Vswitch__ver.d
+│       │   └── Vswitch__verFiles.dat
+│       └── vsrc
+│           ├── switch.v
+│           └── top.v
+└── tree.txt
+
+148 directories, 738 files
