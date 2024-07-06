@@ -1,0 +1,6 @@
+top = top_mux_2x1_1bit
+
+led0 LD0
+sw0 SW0
+sw1 SW1
+sw2 SW2
