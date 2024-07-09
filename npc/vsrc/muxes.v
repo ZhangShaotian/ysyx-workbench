@@ -16,6 +16,8 @@ assign y = (~sel&a)|(sel&b);
 
 endmodule
 
+
+
 //--------------------------
 //Multiplexer Template
 //--------------------------
@@ -100,7 +102,25 @@ module MuxKeyWithDefault #(NR_KEY = 2, KEY_LEN = 1, DATA_LEN = 1) (
   MuxKeyInternal #(NR_KEY, KEY_LEN, DATA_LEN, 1) i0 (out, key, default_out, lut);
 endmodule
 
-//-----------------------------------
+
+
+// -----------------------------------
+// 4 to 1 2-bit mux
+// ----------------------------------
+
+module mux_4x1_2bit(
+	input [7:0] a,
+        input [1:0] sel,
+        output [1:0] y
+);
+	MuxKeyWithDefault #(4, 2, 2) i0 (y, sel, 2'b0, {
+	2'b00, {a[1], a[0]},
+	2'b01, {a[3], a[2]},
+	2'b10, {a[5], a[4]},
+	2'b11, {a[7], a[6]}
+	});
+
+endmodule
 
 
 

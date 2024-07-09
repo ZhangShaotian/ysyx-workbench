@@ -1,5 +1,6 @@
-#####################################################
+# ===============================================================
 # npc/Makefile
+# ===============================================================
 # usage:
 # 	make / make all: At this moment, it is used to run one top module connected to NVBoard, not all of them
 #
@@ -11,6 +12,9 @@
 # 	TOPNAME: Arguments to select the correct verilog top_module in npc/vsrc/ folder
 # 	e.g. make TOPNAME=top_switch run
 
+# -------------------------------------------------------------
+# This part is used for connecting top module to the NVBoard
+# -------------------------------------------------------------
 TOPNAME ?=
 NXDC_FILES = constr/$(TOPNAME).nxdc
 INC_PATH ?=
@@ -34,7 +38,7 @@ $(SRC_AUTO_BIND): $(NXDC_FILES)
 
 # project source
 VSRCS = $(shell find $(abspath ./vsrc) -name "*.v")
-CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cc" -or -name "*.cpp")
+CSRCS = $(shell find $(abspath ./csrc) -name "main_nvboard.cpp")
 CSRCS += $(SRC_AUTO_BIND)
 
 # rules for NVBoard
@@ -57,12 +61,57 @@ ifndef TOPNAME
 	$(error TOPNAME is not defined. Please define TOPNAME, e.g., make TOPNAME=top_module run)
 endif
 
+
+
+# -------------------------------------------------
+# This part is used for verilog module simulations
+# ------------------------------------------------
+
+MODULENAME ?=
+
+# check if MODULENAME is defined or not, if not, display an error message
+check_modulename:
+ifndef MODULENAME
+	$(error MODULENAME is not defined. Please define MODULENAME, e.g., make MODULENAME=module sim)
+endif
+
+# Define the path for necessary files
+MAIN_MODULE_DIR := ./csrc
+MODULE_DIR := ./vsrc
+
+# Define source files
+MAIN_MODULE := $(MAIN_MODULE_DIR)/main_$(MODULENAME).cpp
+#   MODULE := $(MODULE_DIR)/$(MODULENAME).v
+
+# Define Verilator command and symbol
+VERILATOR_SIM := verilator
+VERILATOR_FLAGS_SIM := --trace-fst --cc --exe --build -j 0 -Wall --top-module $(MODULENAME) \
+		       --Wno-DECLFILENAME
+
+# include ../Makefile
+
+
+
+#-------------------------------------------------------------
+# Target List
+# ----------------------------------------------------------
 all: default
 
 run: check_topname $(BIN)
 	@$(BIN)
 
+sim: check_modulename $(VSRCS)
+	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
+	$(VERILATOR_SIM) $(VERILATOR_FLAGS_SIM) $(MAIN_MODULE) $(VSRCS)
+	@echo "Simulation completed"
+
 clean:
 	rm -rf $(BUILD_DIR)
+	rm -rf ./obj_dir
+	rm -f waveform.fst
+	rm -f mux_2x1_1bit_dump.fst
 
-.PHONY: default all clean check_topname run
+.PHONY: default all clean check_topname run sim check_modulename
+	
+
+
