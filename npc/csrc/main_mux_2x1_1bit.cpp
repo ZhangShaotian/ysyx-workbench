@@ -18,7 +18,7 @@ void sim_init(){
   top = new Vmux_2x1_1bit;
   contextp->traceEverOn(true);
   top->trace(tfp, 99);
-  tfp->open("mux_2x1_1bit_dump.fst");
+  tfp->open("waveform.fst");
 }
 
 void sim_exit(){
