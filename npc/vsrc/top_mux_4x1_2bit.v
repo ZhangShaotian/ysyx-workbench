@@ -1,3 +1,29 @@
+//==========================
+// Module: top_mux_4x1_2bit
+//
+// Description:
+// This top module implements a 4-to-1 multiplexer for 2-bit signals.
+// It selects between four 2-bit inputs packed into an 8-bit bus (sw)
+// based on a 2-bit selection signal (sel), and outputs the selected 
+// 2-bit value to two LEDs (led0 and led1). The module is clocked and 
+// can be reset.
+//
+// Inputs:
+// - clk: Clock signal
+// - rst: Reset signal
+// - sw0 - sw9: Individual input switches
+//
+// Outputs:
+// - led0: First LED output
+// - led1: Second LED output
+//
+// Functionality:
+// - Packs the individual input signals into an 8-bit bus (sw).
+// - Packs the selection signals into a 2-bit bus (sel).
+// - Selects between the packed inputs based on sel and outputs the 
+//   result to led0 and led1.
+//==========================
+
 module top_mux_4x1_2bit(
 	input clk,
 	input rst,

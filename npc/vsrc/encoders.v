@@ -35,9 +35,9 @@ endmodule
 module encoder_4to2_priority(
 	input en,
 	input [3:0] a,
-	output reg [1:0] y,
-	integer i
+	output reg [1:0] y
 );
+	integer i;
 	always@(*) begin
 		if(en) begin
 			y = 2'b00;
@@ -48,4 +48,34 @@ module encoder_4to2_priority(
 			y = 2'b00;
 	end
 
+endmodule
+
+//-----------------------------------------------
+// M-to-N Priority Encoder
+// Parameters: M (default = 8), N (default = 3)
+// Description: Encodes M input lines to N output lines,
+//              prioritizing higher-order inputs.
+//------------------------------------------------
+module encoder_priority 
+#(
+	parameter M = 8, //Input bit width
+	parameter N = 3 //Output bit width
+)
+(
+	input en,
+	input [M-1:0] a,
+	output reg [N-1:0] y
+);
+	integer i;
+	always@(*) begin
+		if(en)begin
+			y = 0;
+			for(i = 0; i <= M - 1; i++) begin
+				if(a[i] == 1) 
+					y = i[N-1:0];
+			end
+		end
+		else
+			y = 0;
+	end
 endmodule
