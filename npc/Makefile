@@ -46,7 +46,7 @@ include $(NVBOARD_HOME)/scripts/nvboard.mk
 
 # rules for verilator
 INCFLAGS = $(addprefix -I, $(INC_PATH))
-CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\"" -DHEADER_NAME="\"V$(TOPNAME).h\""
+CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\"" -DHEADER_NAME_TOP="\"V$(TOPNAME).h\""
 
 $(BIN): $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 	@rm -rf $(OBJ_DIR)
@@ -80,13 +80,22 @@ MAIN_MODULE_DIR := ./csrc
 MODULE_DIR := ./vsrc
 
 # Define source files
-MAIN_MODULE := $(MAIN_MODULE_DIR)/main_$(MODULENAME).cpp
+# MAIN_MODULE := $(MAIN_MODULE_DIR)/main_$(MODULENAME).cpp
 #   MODULE := $(MODULE_DIR)/$(MODULENAME).v
+MAIN_MODULE := $(MAIN_MODULE_DIR)/main_sim.cpp
+
+# Automatically determine the module define being used in /csrc/main_sim.cpp
+MODULE_DEFINE := -DMODULE_$(shell echo $(MODULENAME) | tr '[:lower:]' '[:upper:]')
+
+
 
 # Define Verilator command and symbol
 VERILATOR_SIM := verilator
 VERILATOR_FLAGS_SIM := --trace-fst --cc --exe --build -j 0 -Wall --top-module $(MODULENAME) \
-		       --Wno-DECLFILENAME
+		       --Wno-DECLFILENAME \
+		       --CFLAGS -DMODULE_NAME="\"V$(MODULENAME)\"" \
+                       --CFLAGS -DHEADER_NAME_MODULE="\"V$(MODULENAME).h\"" \
+		       --CFLAGS "$(MODULE_DEFINE)"
 
 # include ../Makefile
 
@@ -109,7 +118,6 @@ clean:
 	rm -rf $(BUILD_DIR)
 	rm -rf ./obj_dir
 	rm -f waveform.fst
-	rm -f mux_2x1_1bit_dump.fst
 
 .PHONY: default all clean check_topname run sim check_modulename
 	

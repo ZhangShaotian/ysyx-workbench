@@ -2,7 +2,7 @@
 #define STRINGIFY(x) #x
 #define TOSTRING(x) STRINGIFY(x)
 #define INCLUDE_FILE(x) TOSTRING(x)
-#include INCLUDE_FILE(HEADER_NAME)
+#include INCLUDE_FILE(HEADER_NAME_TOP)
 
 #include <nvboard.h>
 
