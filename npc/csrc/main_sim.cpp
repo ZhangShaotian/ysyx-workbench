@@ -95,8 +95,10 @@ int main() {
         top->a = 0b1; top->b = 0b0; step_and_dump_wave();
         top->a = 0b1; top->b = 0b1; step_and_dump_wave();
 
-
-
+#elif defined(MODULE_ALU)
+	top->sel = 0b000; top->A = 0b1110; top->B = 0b1000; step_and_dump_wave();
+			  top->A = 0b0110; top->B = 0b1100; step_and_dump_wave();
+			  top->A = 0b1110; top->B = 0b1000; step_and_dump_wave();
 
 
 

@@ -1,0 +1,9 @@
+top = top_alu
+
+sw_A (SW3, SW2, SW1, SW0)
+sw_B (SW7, SW6, SW5, SW4)
+sw_sel (SW10, SW9, SW8)
+led_result (LD3, LD2, LD1, LD0)
+led6_overflow LD6
+led5_zero LD5
+led4_carry LD4

@@ -10,7 +10,7 @@ module alu
         input signed [nbit-1:0] A,
         input signed [nbit-1:0] B,
         input [2:0] sel,
-        output reg [nbit-1:0] result,
+        output reg signed [nbit-1:0] result,
         output reg overflow,
         output reg zero,
         output reg carry
@@ -49,11 +49,11 @@ module alu
                         zero = ~(|result);
                 end 
                 3'b110: begin           //If A<B then out=1; else out=0;
-                        result = {(nbit-1){1'b0}, (A < B)}; 
+                        result = {{(nbit-1){1'b0}}, (A < B)}; 
                         zero = ~(|result);
                 end 
                 3'b111: begin           //If A==B then out=1; else out=0;
-                        result = {(nbit-1){1'b0}, (A == B)};
+                        result = {{(nbit-1){1'b0}}, (A == B)};
                         zero = ~(|result);
                 end 
                 default: begin

@@ -48,6 +48,7 @@ module ripple_carry_adder
 				.sum(sum[i])
 			);
 			end
+	endgenerate
 endmodule
 
 
@@ -57,7 +58,7 @@ endmodule
 //----------------------------------------
 module carry_look_ahead_adder
 #(
-	parameter nbit = 4;
+	parameter nbit = 4
 )
 (
 	input [nbit-1:0] a,
