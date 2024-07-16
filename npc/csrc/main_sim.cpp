@@ -100,17 +100,21 @@ int main() {
 			  top->A = 0b0110; top->B = 0b1100; step_and_dump_wave();
 			  top->A = 0b1110; top->B = 0b1000; step_and_dump_wave();
 
-
-
-
-
-
-
-
-
-
-
-
+#elif defined(MODULE_UP_COUNTER)
+	top->rst = 0b1; step_and_dump_wave();
+	top->rst = 0b0; top->en = 0b1; top->set_signal = 0b0; 
+	top->clk = 0b0; step_and_dump_wave();
+	top->clk = 0b0; step_and_dump_wave();
+	top->clk = 0b0; step_and_dump_wave();
+        top->clk = 0b0; step_and_dump_wave();
+	top->clk = 0b0; step_and_dump_wave();
+        top->clk = 0b0; step_and_dump_wave();
+	top->clk = 0b0; step_and_dump_wave();
+        top->clk = 0b0; step_and_dump_wave();
+	top->clk = 0b0; step_and_dump_wave();
+        top->clk = 0b0; step_and_dump_wave();
+	top->clk = 0b0; step_and_dump_wave();
+        top->clk = 0b0; step_and_dump_wave();
 
 
 
