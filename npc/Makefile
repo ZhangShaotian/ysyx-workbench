@@ -113,6 +113,8 @@ sim: check_modulename $(VSRCS)
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	$(VERILATOR_SIM) $(VERILATOR_FLAGS_SIM) $(MAIN_MODULE) $(VSRCS)
 	@echo "Simulation completed"
+	@./obj_dir/V$(MODULENAME)
+	@gtkwave waveform.fst
 
 clean:
 	rm -rf $(BUILD_DIR)

@@ -21,8 +21,8 @@ module EnResetSetPosEdgeReg
 	input [nbit-1:0] d,
 	output reg [nbit-1:0] q
 );
-	always@(posedge clk or rst) begin
-		if(rst)
+	always@(posedge clk or negedge rst) begin
+		if(!rst)
 			q <= reset_value;
 		else if(set_signal)
 			q <= set_value;

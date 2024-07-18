@@ -102,7 +102,7 @@ int main() {
 
 #elif defined(MODULE_UP_COUNTER)
 	top->clk = 0b0; step_and_dump_wave();
-        top->rst = 0b0; top->en = 0b1; top->set_signal = 0b0; top->clk = 0b1; step_and_dump_wave();
+        top->rst = 0b1; top->en = 0b1; top->set_signal = 0b0; top->clk = 0b1; step_and_dump_wave();
 	top->clk = 0b0; step_and_dump_wave();
 	top->clk = 0b1; step_and_dump_wave();
 	top->clk = 0b0; step_and_dump_wave();
@@ -129,8 +129,8 @@ int main() {
 	top->clk = 0b1; step_and_dump_wave();
 	top->clk = 0b0; step_and_dump_wave();
 	top->clk = 0b1; step_and_dump_wave();
-	top->rst = 0b1; top->clk = 0b0; step_and_dump_wave();
-        top->rst = 0b0; top->clk = 0b1; step_and_dump_wave();
+	top->rst = 0b0; top->clk = 0b0; step_and_dump_wave();
+        top->rst = 0b1; top->clk = 0b1; step_and_dump_wave();
 	top->clk = 0b0; step_and_dump_wave();
         top->clk = 0b1; step_and_dump_wave();
 	top->clk = 0b0; step_and_dump_wave();
@@ -154,7 +154,7 @@ int main() {
 	
 #elif defined(MODULE_DOWN_COUNTER)
 	top->clk = 0b0; step_and_dump_wave();
-        top->rst = 0b0; top->en = 0b1; top->set_signal = 0b0; top->clk = 0b1; step_and_dump_wave();
+        top->rst = 0b1; top->en = 0b1; top->set_signal = 0b0; top->clk = 0b1; step_and_dump_wave();
 	top->clk = 0b0; step_and_dump_wave();
 	top->clk = 0b1; step_and_dump_wave();
 	top->clk = 0b0; step_and_dump_wave();
@@ -181,8 +181,8 @@ int main() {
 	top->clk = 0b1; step_and_dump_wave();
 	top->clk = 0b0; step_and_dump_wave();
 	top->clk = 0b1; step_and_dump_wave();
-	top->rst = 0b1; top->clk = 0b0; step_and_dump_wave();
-        top->rst = 0b0; top->clk = 0b1; step_and_dump_wave();
+	top->rst = 0b0; top->clk = 0b0; step_and_dump_wave();
+        top->rst = 0b1; top->clk = 0b1; step_and_dump_wave();
 	top->clk = 0b0; step_and_dump_wave();
         top->clk = 0b1; step_and_dump_wave();
 	top->clk = 0b0; step_and_dump_wave();

@@ -9,7 +9,8 @@ module top_timer_display(
         output [7:0] seg4, //Display 4
         output [7:0] seg5, //Display 5
         output [7:0] seg6, //Display 6
-        output [7:0] seg7 //Display 7
+        output [7:0] seg7, //Display 7
+	output led0
 );
 	//Enable timer on display0 and display1
 	timer_display myTimer(
@@ -17,7 +18,8 @@ module top_timer_display(
 		.start(sw0_start),
 		.rst(rst),
 		.seg0(seg0),
-		.seg1(seg1)
+		.seg1(seg1),
+		.light(led0)
 	);
 
 	//Display2

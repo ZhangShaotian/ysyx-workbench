@@ -1,15 +1,21 @@
 module timer_display(
 	input clk,
 	input start,
-	input rst,
+	input rst,//Active low reset
 	output reg [7:0] seg0,
-	output reg [7:0] seg1
+	output reg [7:0] seg1,
+	output reg light
 );
 	reg [25:0] count_clk;
 	reg clk_1s;
-
-	always@(posedge clk)begin
-		if(start)begin
+	
+	// Frequency divider to generate 1Hz clock
+	always@(posedge clk or negedge rst)begin
+		if (!rst) begin
+			count_clk <= 0;
+			clk_1s <= 0;
+		end
+		else if(start)begin
 			if(count_clk == 24999999)begin
 				count_clk <= 0;
 				clk_1s <= ~clk_1s;
@@ -20,9 +26,10 @@ module timer_display(
 	end
 	
 	reg [6:0] count;
-
-	always@(posedge clk_1s or rst) begin
-		if (rst)
+	
+	// Counter to count from 0 to 99
+	always@(posedge clk_1s or negedge rst) begin
+		if (!rst)
 			count <= 0;
 		else if (count == 99)
 			count <= 0;
@@ -30,6 +37,7 @@ module timer_display(
 			count <= count + 1;
 	end
 
+	// Display logic for the 7-segment displays
 	always@(*) begin
 		case(count/10)
 			0: seg1 = 8'b00000010;//0
@@ -58,6 +66,34 @@ module timer_display(
 			9: seg0 = 8'b00011000;//9
 			default: seg0 = 8'b11111111;//Default: disenable all pins
 		endcase
+	end
 
+	// Light control logic
+	always@(posedge clk_1s or negedge rst) begin
+		if(!rst)
+			light <= 0;
+		else if(count >= 90)
+			light <= ~light;
+		else
+			light <= 0;
 	end
 endmodule
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
