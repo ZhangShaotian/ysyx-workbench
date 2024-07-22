@@ -60,8 +60,41 @@ module segments_x7_display(
 		4'b0110: seg = 8'b01000000;//6
 		4'b0111: seg = 8'b00011110;//7
 		4'b1000: seg = 8'b00000000;//8
-		4'b1001: seg = 8'b00011000;//9
+		4'b1001: seg = 8'b00001000;//9
 		default: seg = 8'b11111111;//Default: disenable all pins
 		endcase
 	end
 endmodule
+
+
+//-----------------------------------------------------
+// Able to display hex numbers
+//----------------------------------------------------
+module segments_x7_display_hex(
+	input [3:0] binary,
+	output reg [7:0] seg
+);
+	always@(*) begin
+		seg = 8'b11111111;  // Initialization
+		case(binary)
+		4'b0000: seg = 8'b00000010;//0
+		4'b0001: seg = 8'b10011110;//1
+		4'b0010: seg = 8'b00100100;//2
+		4'b0011: seg = 8'b00001100;//3
+		4'b0100: seg = 8'b10011000;//4
+		4'b0101: seg = 8'b01001000;//5
+		4'b0110: seg = 8'b01000000;//6
+		4'b0111: seg = 8'b00011110;//7
+		4'b1000: seg = 8'b00000000;//8
+		4'b1001: seg = 8'b00001000;//9
+		4'b1010: seg = 8'b00010000;//A
+		4'b1011: seg = 8'b11000000;//b
+		4'b1100: seg = 8'b01100010;//C
+		4'b1101: seg = 8'b10000100;//d
+		4'b1110: seg = 8'b01100000;//E
+		4'b1111: seg = 8'b01110000;//F
+		default: seg = 8'b11111111;//Default: disenable all pins
+		endcase
+	end
+endmodule
+
