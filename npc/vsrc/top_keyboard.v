@@ -32,21 +32,13 @@ module top_keyboard(
 	parameter IDLE = 2'b00, KEY_PRESSED = 2'b01, KEY_RELEASED = 2'b10;
 	reg [1:0] state_curr, state_next;
 	reg [7:0] key_count; // Count total key presses (0-99)
-	reg [3:0] seg7_code, seg6_code, seg5_code, seg4_code, seg3_code, seg2_code, seg1_code, seg0_code;
+	reg [4:0] seg7_code, seg6_code, seg5_code, seg4_code, seg3_code, seg2_code, seg1_code, seg0_code;
 
 	// State register
 	always @(posedge clk) begin
         	if (!rst) begin
             		state_curr <= IDLE;
 			key_count <= 0;
-			seg0_code = 4'b0000;
-                        seg1_code = 4'b0000;
-                        seg2_code = 4'b0000;
-                        seg3_code = 4'b0000;
-                        seg4_code = 4'b0000;
-                        seg5_code = 4'b0000; 
-			seg6_code_temp = 8'b00000000;
-                        seg7_code_temp = 8'b00000000;
         	end 
 		else begin
             		state_curr <= state_next;
@@ -69,7 +61,7 @@ module top_keyboard(
 				end
 			    end
 			    KEY_PRESSED: begin
-				if (!ready) begin
+				if (scan_code == 8'hf0) begin
 				    state_next = KEY_RELEASED;
 				end else begin
 				    state_next = KEY_PRESSED;
@@ -100,62 +92,62 @@ module top_keyboard(
 		if (ready) begin
 			case(state_curr) 
 				IDLE: begin
-					seg0_code = 4'b0000;
-					seg1_code = 4'b0000;
-					seg2_code = 4'b0000;
-					seg3_code = 4'b0000;
-					seg4_code = 4'b0000;
-					seg5_code = 4'b0000;
-					seg6_code_temp = 8'b00000000;
-					seg7_code_temp = 8'b00000000;
+					seg0_code = 5'b11111;
+					seg1_code = 5'b11111;
+					seg2_code = 5'b11111;
+					seg3_code = 5'b11111;
+					seg4_code = 5'b11111;
+					seg5_code = 5'b11111;
+					seg6_code_temp = 8'b11111111;
+					seg7_code_temp = 8'b11111111;
 				end
 				KEY_PRESSED: begin
-					seg0_code = scan_code[3:0];
-					seg1_code = scan_code[7:4];
-					seg2_code = ascii_code[3:0];
-					seg3_code = ascii_code[7:4];
-					seg4_code = 4'b0000;
-					seg5_code = 4'b0000;
+					seg0_code = {1'b0, scan_code[3:0]};
+					seg1_code = {1'b0, scan_code[7:4]};
+					seg2_code = {1'b0, ascii_code[3:0]};
+					seg3_code = {1'b0, ascii_code[7:4]};
+					seg4_code = 5'b11111;
+					seg5_code = 5'b11111;
 					seg6_code_temp = key_count % 10;
 					seg7_code_temp = (key_count / 10) % 10;
 
 				end
 				KEY_RELEASED: begin
-					seg0_code = scan_code[3:0];
-					seg1_code = scan_code[7:4];
-					seg2_code = ascii_code[3:0];
-					seg3_code = ascii_code[7:4];
-					seg4_code = 4'b0000;
-					seg5_code = 4'b0000;
+					seg0_code = 5'b11111;
+                                        seg1_code = 5'b11111;
+                                        seg2_code = 5'b11111;
+                                        seg3_code = 5'b11111;
+                                        seg4_code = 5'b11111;
+                                        seg5_code = 5'b11111;
 					seg6_code_temp = key_count % 10;
 					seg7_code_temp = (key_count / 10) % 10;
 				end
 				default: begin
-					seg0_code = 4'b0000;
-					seg1_code = 4'b0000;
-					seg2_code = 4'b0000;
-					seg3_code = 4'b0000;
-					seg4_code = 4'b0000;
-					seg5_code = 4'b0000;
-					seg6_code_temp = 8'b00000000;
-					seg7_code_temp = 8'b00000000;	
+					seg0_code = 5'b11111;
+                                        seg1_code = 5'b11111;
+                                        seg2_code = 5'b11111;
+                                        seg3_code = 5'b11111;
+                                        seg4_code = 5'b11111;
+                                        seg5_code = 5'b11111;
+                                        seg6_code_temp = 8'b11111111;
+                                        seg7_code_temp = 8'b11111111;
 				end
 			endcase
 		end
 	end
 	
-	assign seg6_code = seg6_code_temp[3:0];
-	assign seg7_code = seg7_code_temp[3:0];
+	assign seg6_code = seg6_code_temp[4:0];
+	assign seg7_code = seg7_code_temp[4:0];
 
 	// Instantiate segments display module
-	segments_x7_display_hex mySeg0(.binary(seg0_code), .seg(seg0));
-	segments_x7_display_hex mySeg1(.binary(seg1_code), .seg(seg1));
-	segments_x7_display_hex mySeg2(.binary(seg2_code), .seg(seg2));
-	segments_x7_display_hex mySeg3(.binary(seg3_code), .seg(seg3));
-	segments_x7_display_hex mySeg4(.binary(seg4_code), .seg(seg4));
-	segments_x7_display_hex mySeg5(.binary(seg5_code), .seg(seg5));
-	segments_x7_display_hex mySeg6(.binary(seg6_code[3:0]), .seg(seg6));
-	segments_x7_display_hex mySeg7(.binary(seg7_code[3:0]), .seg(seg7));
+	light mySeg0(.binary(seg0_code), .seg(seg0));
+	light mySeg1(.binary(seg1_code), .seg(seg1));
+	light mySeg2(.binary(seg2_code), .seg(seg2));
+	light mySeg3(.binary(seg3_code), .seg(seg3));
+	light mySeg4(.binary(seg4_code), .seg(seg4));
+	light mySeg5(.binary(seg5_code), .seg(seg5));
+	light mySeg6(.binary(seg6_code), .seg(seg6));
+	light mySeg7(.binary(seg7_code), .seg(seg7));
 
 
 
