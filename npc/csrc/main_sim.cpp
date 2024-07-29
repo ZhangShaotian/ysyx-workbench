@@ -202,6 +202,90 @@ int main() {
 	top->clk = 0b0; step_and_dump_wave();
 	top->clk = 0b1; step_and_dump_wave();
 
+#elif defined(MODULE_SEQUENCEDETECTORMOOREFSM)
+// Apply reset
+    top->rst = 1;
+    step_and_dump_wave();
+    top->rst = 0;
+    step_and_dump_wave();
+
+    // Test sequence for four consecutive 0s
+    top->din = 0;
+    for (int i = 0; i < 4; ++i) {
+        top->clk = 0;
+        step_and_dump_wave();
+        top->clk = 1;
+        step_and_dump_wave();
+    }
+
+    // Test sequence for four consecutive 1s
+    top->din = 1;
+    for (int i = 0; i < 4; ++i) {
+        top->clk = 0;
+        step_and_dump_wave();
+        top->clk = 1;
+        step_and_dump_wave();
+    }
+
+    // Test sequence for mixed input
+    top->din = 1;
+    for (int i = 0; i < 2; ++i) {
+        top->clk = 0;
+        step_and_dump_wave();
+        top->clk = 1;
+        step_and_dump_wave();
+    }
+    top->din = 0;
+    for (int i = 0; i < 2; ++i) {
+        top->clk = 0;
+        step_and_dump_wave();
+        top->clk = 1;
+        step_and_dump_wave();
+    }
+
+
+#elif defined(MODULE_SEQUENCEDETECTORMEALYFSM)
+// Apply reset
+    top->rst = 1;
+    step_and_dump_wave();
+    top->rst = 0;
+    step_and_dump_wave();
+
+    // Test sequence for four consecutive 0s
+    top->din = 0;
+    for (int i = 0; i < 4; ++i) {
+        top->clk = 0;
+        step_and_dump_wave();
+        top->clk = 1;
+        step_and_dump_wave();
+    }
+
+    // Test sequence for four consecutive 1s
+    top->din = 1;
+    for (int i = 0; i < 4; ++i) {
+        top->clk = 0;
+        step_and_dump_wave();
+        top->clk = 1;
+        step_and_dump_wave();
+    }
+
+    // Test sequence for mixed input
+    top->din = 1;
+    for (int i = 0; i < 2; ++i) {
+        top->clk = 0;
+        step_and_dump_wave();
+        top->clk = 1;
+        step_and_dump_wave();
+    }
+    top->din = 0;
+    for (int i = 0; i < 2; ++i) {
+        top->clk = 0;
+        step_and_dump_wave();
+        top->clk = 1;
+        step_and_dump_wave();
+    }
+
+
 
 
 #endif
