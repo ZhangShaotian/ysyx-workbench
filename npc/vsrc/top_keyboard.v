@@ -32,7 +32,15 @@ module top_keyboard(
 	parameter IDLE = 2'b00, KEY_PRESSED = 2'b01, KEY_RELEASED = 2'b10;
 	reg [1:0] state_curr, state_next;
 	reg [7:0] key_count; // Count total key presses (0-99)
-	reg [4:0] seg7_code, seg6_code, seg5_code, seg4_code, seg3_code, seg2_code, seg1_code, seg0_code;
+//	reg [4:0] seg7_code, seg6_code, seg5_code, seg4_code, seg3_code, seg2_code, seg1_code, seg0_code;
+	reg [4:0] seg7_code = 5'b11111;
+    	reg [4:0] seg6_code = 5'b11111;
+	reg [4:0] seg5_code = 5'b11111;
+	reg [4:0] seg4_code = 5'b11111;
+ 	reg [4:0] seg3_code = 5'b11111;
+  	reg [4:0] seg2_code = 5'b11111;
+ 	reg [4:0] seg1_code = 5'b11111;
+    	reg [4:0] seg0_code = 5'b11111;
 
 	// State register
 	always @(posedge clk) begin
@@ -84,8 +92,8 @@ module top_keyboard(
 			nextdata_n = 1;
 	end
 
-	reg [7:0] seg6_code_temp;
-	reg [7:0] seg7_code_temp;
+	reg [7:0] seg6_code_temp = 8'b11111111;
+	reg [7:0] seg7_code_temp = 8'b11111111;
 
 	// Output logic
 	always@(*) begin
