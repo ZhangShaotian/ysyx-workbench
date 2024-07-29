@@ -44,6 +44,9 @@
 //         4
 //------------------------------------------
 
+//-------------------------------------------------------
+//Able to display numbers from 0 to 9, given 4 bit binary input
+//--------------------------------------------------------
 module segments_x7_display(
 	input [3:0] binary,
 	output reg [7:0] seg
@@ -68,7 +71,7 @@ endmodule
 
 
 //-----------------------------------------------------
-// Able to display hex numbers
+// Able to display hex numbers, given 4 bit binary input
 //----------------------------------------------------
 module segments_x7_display_hex(
 	input [3:0] binary,
@@ -97,4 +100,65 @@ module segments_x7_display_hex(
 		endcase
 	end
 endmodule
+
+
+
+//---------------------------------------------------------
+//Able to display hex numbers, with disenable 
+//---------------------------------------------------------
+module light(
+	input [4:0] binary,
+	output reg [7:0] seg
+);
+	always@(*) begin
+		seg = 8'b11111111;  // Initialization
+		case(binary)
+		5'b00000: seg = 8'b00000010;//0
+		5'b00001: seg = 8'b10011110;//1
+		5'b00010: seg = 8'b00100100;//2
+		5'b00011: seg = 8'b00001100;//3
+		5'b00100: seg = 8'b10011000;//4
+		5'b00101: seg = 8'b01001000;//5
+		5'b00110: seg = 8'b01000000;//6
+		5'b00111: seg = 8'b00011110;//7
+		5'b01000: seg = 8'b00000000;//8
+		5'b01001: seg = 8'b00001000;//9
+		5'b01010: seg = 8'b00010000;//A
+		5'b01011: seg = 8'b11000000;//b
+		5'b01100: seg = 8'b01100010;//C
+		5'b01101: seg = 8'b10000100;//d
+		5'b01110: seg = 8'b01100000;//E
+		5'b01111: seg = 8'b01110000;//F
+		5'b11111: seg = 8'b11111111;//Disenable 
+		default: seg = 8'b11111111;//Default: disenable all pins
+		endcase
+	end
+endmodule
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
