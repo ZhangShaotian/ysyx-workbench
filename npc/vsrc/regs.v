@@ -4,6 +4,27 @@
 
 
 
+//----------------------------------------------------------
+//Simple Register
+//----------------------------------------------------------
+module simpleReg#(
+	parameter nbit = 1
+)
+(
+	input clk,
+	input rst,
+	input [nbit-1:0] din,
+	output reg [nbit-1:0] dout
+);
+	always@(posedge clk)begin
+		if(rst)
+			dout <= 0;
+		else
+			dout <= din;
+	end
+endmodule
+
+
 //------------------------------------------------------------
 //Positive-edge triggered flip-flop with enable, reset and set
 //------------------------------------------------------------
