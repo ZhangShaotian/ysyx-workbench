@@ -49,7 +49,8 @@ static int cmd_c(char *args) {
 
 
 static int cmd_q(char *args) {
-  return -1;
+  nemu_state.state = NEMU_QUIT; // Set the NEMU state to quit, indicating the program should terminate
+  return -1;  // Return -1 to indicate the command processed successfully and triggered a quit operation from sdb_mainloop()
 }
 
 static int cmd_help(char *args);
