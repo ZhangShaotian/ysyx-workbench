@@ -55,6 +55,33 @@ static int cmd_q(char *args) {
 
 static int cmd_help(char *args);
 
+static int cmd_si(char *args){
+  int n = 1; // Defaulting to executing 1 instruction
+
+  if (args != NULL) {
+    char *endptr;
+    n = strtol(args, &endptr, 10); // Convert the argument to an integer and check for errors
+
+    // Check if there are any non-space characters after the first number
+    if (*endptr != '\0') {
+      while (*endptr == ' ') endptr++; // Skip any spaces
+
+      if (*endptr != '\0') { // If there's anything left that's not a space, it's an error
+        printf("Error: Invalid argument '%s'. Only one integer is allowed.\n", args);
+        return 0; // Return without executing any instruction
+      }
+    }
+
+    if (n <= 0) {
+      printf("Error: The argument '%s' is not a positive integer.\n", args);
+      return 0; // Return without executing any instruction
+    }
+  }
+
+  cpu_exec(n); // Execute n instruction
+  return 0;
+}
+
 static struct {
   const char *name;
   const char *description;
@@ -63,7 +90,7 @@ static struct {
   { "help", "Display information about all supported commands", cmd_help },
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
-
+  {"si", "Execute one or N instructions step by step. Example: 'si' or 'si 10'", cmd_si},
   /* TODO: Add more commands */
 
 };
