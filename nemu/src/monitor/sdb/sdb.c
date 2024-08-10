@@ -82,6 +82,24 @@ static int cmd_si(char *args){
   return 0;
 }
 
+static int cmd_info(char *args) {
+  if (args == NULL) {
+    printf("Error: No subcommand provided. Use 'info r' or 'info w'.\n");
+    return 0;
+  }
+
+  if (strcmp(args, "r") == 0) {
+    isa_reg_display(); // Call function to print register state
+  } else if (strcmp(args, "w") == 0) {
+    // Here we would later implement the logic to display watchpoint information
+    printf("Watchpoint info not implemented yet.\n");
+  } else {
+    printf("Error: Unknown subcommand '%s'.\n", args);
+  }
+
+  return 0;
+}
+
 static struct {
   const char *name;
   const char *description;
@@ -91,6 +109,7 @@ static struct {
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
   {"si", "Execute one or N instructions step by step. Example: 'si' or 'si 10'", cmd_si},
+  { "info", "Display program status. Example: 'info r' or 'info w'", cmd_info },
   /* TODO: Add more commands */
 
 };
