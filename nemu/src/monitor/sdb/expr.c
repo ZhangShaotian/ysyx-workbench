@@ -22,7 +22,7 @@
 
 enum {
   TK_NOTYPE = 256, TK_EQ,
-
+  TK_NUM
   /* TODO: Add more token types */
 
 };
@@ -39,6 +39,7 @@ static struct rule {
   {" +", TK_NOTYPE},    // spaces
   {"\\+", '+'},         // plus
   {"==", TK_EQ},        // equal
+  {"[0-9]+", TK_NUM},   // decimal number
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -95,7 +96,20 @@ static bool make_token(char *e) {
          */
 
         switch (rules[i].token_type) {
-          default: TODO();
+          case TK_NOTYPE:
+            // Skip spaces, do nothing
+            break;
+          case TK_NUM:
+          case '+':
+            // Store the token
+            tokens[nr_token].type = rules[i].token_type;
+            strncpy(tokens[nr_token].str, substr_start, substr_len);
+            tokens[nr_token].str[substr_len] = '\0';
+            nr_token++;
+            break;
+          default: 
+            printf("Unknown token type: %d\n", rules[i].token_type);
+            break;
         }
 
         break;
@@ -119,7 +133,33 @@ word_t expr(char *e, bool *success) {
   }
 
   /* TODO: Insert codes to evaluate the expression. */
-  TODO();
+  if (nr_token != 3) {
+    *success = false;
+    printf("Error: Only simple expressions like '1+2' are supported.\n");
+    return 0;
+  }
 
-  return 0;
+  int num1 = atoi(tokens[0].str);
+  int num2 = atoi(tokens[2].str);
+
+  if (tokens[1].type == '+') {
+    *success = true;
+    return num1 + num2;
+  } else {
+    *success = false;
+    printf("Error: Only '+' operator is supported.\n");
+    return 0;
+  }
 }
+
+
+
+
+
+
+
+
+
+
+
+

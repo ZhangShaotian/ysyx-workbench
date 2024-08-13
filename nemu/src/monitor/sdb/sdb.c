@@ -100,6 +100,19 @@ static int cmd_info(char *args) {
   return 0;
 }
 
+static int cmd_expr(char *args){
+  bool success = true;
+  word_t result = expr(args, &success);
+
+  if (success) {
+    printf("Result: %u\n", result);
+  } else {
+    printf("Failed to evaluate expression: %s\n", args);
+  }
+
+  return 0;
+}
+
 static struct {
   const char *name;
   const char *description;
@@ -108,8 +121,9 @@ static struct {
   { "help", "Display information about all supported commands", cmd_help },
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
-  {"si", "Execute one or N instructions step by step. Example: 'si' or 'si 10'", cmd_si},
+  { "si", "Execute one or N instructions step by step. Example: 'si' or 'si 10'", cmd_si },
   { "info", "Display program status. Example: 'info r' or 'info w'", cmd_info },
+  { "p", "Evaluate the value of an expression. Example: 'p $eax + 1'", cmd_expr },
   /* TODO: Add more commands */
 
 };
