@@ -40,14 +40,26 @@ static struct rule {
   {"\\+", '+'},         // plus
   {"==", TK_EQ},        // equal
   {"[0-9]+", TK_NUM},   // decimal number
+  {"\\-", '-'},         // minus
+  {"\\*", '*'},         // multiply
+  {"/", '/'},           // divide
+  {"\\(", '('},         // left parentheses
+  {"\\)", ')'},         // right parentheses
 };
 
 #define NR_REGEX ARRLEN(rules)
 
 static regex_t re[NR_REGEX] = {};
 
-/* Rules are used for many times.
- * Therefore we compile them only once before any usage.
+/**
+ * Initializes the regular expressions for tokenization.
+ *
+ * This function compiles the regex patterns defined in the `rules` array.
+ * These compiled patterns are then used to match and identify different
+ * components of the expression, such as operators, numbers, and parentheses.
+ *
+ * The function runs once at the beginning and stores the compiled regex
+ * patterns in the `re` array for later use.
  */
 void init_regex() {
   int i;
@@ -71,6 +83,17 @@ typedef struct token {
 static Token tokens[32] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
 
+/**
+ * Tokenizes the input expression into an array of tokens.
+ *
+ * This function scans through the input string `e` and matches it against
+ * the compiled regex patterns stored in `re`. For each match, a token is
+ * created and stored in the `tokens` array, which is then used for further
+ * processing and evaluation of the expression.
+ *
+ * @param e The input expression string to be tokenized.
+ * @return true if the tokenization is successful, false if an error occurs.
+ */
 static bool make_token(char *e) {
   int position = 0;
   int i;
@@ -101,6 +124,11 @@ static bool make_token(char *e) {
             break;
           case TK_NUM:
           case '+':
+          case '-':
+          case '*':
+          case '/':
+          case '(':
+          case ')':
             // Store the token
             tokens[nr_token].type = rules[i].token_type;
             strncpy(tokens[nr_token].str, substr_start, substr_len);
@@ -125,7 +153,130 @@ static bool make_token(char *e) {
   return true;
 }
 
+// Check if the expression is surrounded by a matched pair of parentheses
+bool check_parentheses(int p, int q){
+  if (tokens[p].type == '(' && tokens[q].type == ')' ){
+    int count = 0;
+    for (int i = p + 1; i < q; i++){
+      if (tokens[i].type == '(') count++;
+      if (tokens[i].type == ')') count--;
+      if (count < 0 ) return false;
+    }
+    return count == 0;
+  }
+  return false;
+}
 
+// Return the priority number of the operators to find_main_operator()
+int get_operator_priority(int type) {
+  switch (type) {
+    case '+':
+    case '-': return 1;
+    case '*':
+    case '/': return 2;
+    default: return 100;
+  }
+}
+
+// Return the operator position with the lowest priority
+int find_main_operator(int p, int q) {
+  int op = -1;
+  int bracket_level = 0;
+  int min_priority = 100;
+
+  for (int i = p; i <= q; i++) {
+    if (tokens[i].type == '(') bracket_level++;
+    if (tokens[i].type == ')') bracket_level--;
+
+    if (bracket_level == 0 && (tokens[i].type == '+' || tokens[i].type == '-' ||
+                                tokens[i].type == '*' || tokens[i].type == '/')) {
+      // Check if the operator has both left and right operands
+      if (i == p) {
+        // If the operator is at the beginning, it is invalid
+        printf("Error: Operator '%c' at position %d has no left operand.\n", tokens[i].type, i);
+        return -1;  // Return immediately after detecting an error
+      }
+      if (i == q) {
+        // If the operator is at the end, it is invalid
+        printf("Error: Operator '%c' at position %d has no right operand.\n", tokens[i].type, i);
+        return -1;  // Return immediately after detecting an error
+      }
+      if ((tokens[i-1].type != TK_NUM && tokens[i-1].type != ')') ||
+          (tokens[i+1].type != TK_NUM && tokens[i+1].type != '(')) {
+        // If the operator doesn't have valid operands on both sides, skip it
+        printf("Error: Operator '%c' at position %d has invalid operands on one or both sides.\n", tokens[i].type, i);
+        return -1;  // Return immediately after detecting an error
+      }
+
+      int priority = get_operator_priority(tokens[i].type);
+      if (priority <= min_priority) {
+        min_priority = priority;
+        op = i;
+      }
+    }
+  }
+
+  if (op == -1) {
+    printf("No valid operator found in the expression.\n");
+  }
+
+  return op;
+}
+
+// Evaluate the value of the expression by Divide-and-Conquer Algorithm
+word_t eval(int p, int q, bool *success){
+  if (p > q) {
+    printf("Error: position 'p'(leftmost) is larger than position 'q'(rightmost).\n");
+    *success = false;
+    return 0;
+  }
+  else if (p == q){
+    if(tokens[p].type == TK_NUM){
+      return atoi(tokens[p].str);
+    }else{
+      printf("Error: Single token is not a number.\n");
+      *success = false;
+      return 0;
+    }
+  }
+  else if(check_parentheses(p,q) == true){
+    /* The expression is surrounded by a matched pair of parentheses.
+     * If that is the case, just throw away the parentheses.
+     */
+    return eval(p+1, q-1, success);
+  }
+  else{
+    int op = find_main_operator(p, q);
+    if (op == -1) {
+      // Error messages are handled within find_main_operator(), no additional logging needed here
+      *success = false;
+      return 0;
+    }
+
+    word_t val1 = eval(p, op - 1, success);
+    word_t val2 = eval(op + 1, q, success);
+
+    switch (tokens[op].type) {
+      case '+': return val1 + val2;
+      case '-': return val1 - val2;
+      case '*': return val1 * val2;
+      case '/': return val1 / val2;
+      default: assert(0);
+    }
+  }
+}
+
+/**
+ * Evaluates the given expression string.
+ *
+ * Tokenizes the input expression using `make_token()` and then evaluates
+ * it with `eval()`, which recursively processes the tokens according to arithmetic rules.
+ * If the expression is invalid, sets `success` to false.
+ *
+ * @param e The input expression string.
+ * @param success Pointer to a boolean indicating evaluation success.
+ * @return The result of the evaluated expression as a word_t.
+ */
 word_t expr(char *e, bool *success) {
   if (!make_token(e)) {
     *success = false;
@@ -133,24 +284,8 @@ word_t expr(char *e, bool *success) {
   }
 
   /* TODO: Insert codes to evaluate the expression. */
-  if (nr_token != 3) {
-    *success = false;
-    printf("Error: Only simple expressions like '1+2' are supported.\n");
-    return 0;
-  }
-
-  int num1 = atoi(tokens[0].str);
-  int num2 = atoi(tokens[2].str);
-
-  if (tokens[1].type == '+') {
-    *success = true;
-    return num1 + num2;
-  } else {
-    *success = false;
-    printf("Error: Only '+' operator is supported.\n");
-    return 0;
-  }
-}
+  return eval(0, nr_token - 1, success);
+} 
 
 
 
