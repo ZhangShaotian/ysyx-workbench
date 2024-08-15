@@ -216,10 +216,9 @@ int find_main_operator(int p, int q) {
             min_priority = priority;
             op = i;
           }
-          //continue; // Continue checking other tokens, avoiding selecting the following negative sign as
-                    // main operator due to the code below.
         }
-        continue;
+        continue; // Continue to the next token, ensuring that subsequent negative signs are not mistakenly 
+                  // identified as the main operator in the following priority comparison.
       }
       // Check if the operator has both left and right operands for binary operators
       if (tokens[i].type != TK_NEG) {
@@ -303,10 +302,10 @@ word_t eval(int p, int q, bool *success){
     printf("val1: %d, val2: %d, operator: %c\n", val1, val2, tokens[op].type);//Debug
 
     switch (tokens[op].type) {
-      case '+': return val1 + val2;
-      case '-': return val1 - val2;
-      case '*': return val1 * val2;
-      case '/': return val1 / val2;
+      case '+': return (int32_t)val1 + (int32_t)val2;
+      case '-': return (int32_t)val1 - (int32_t)val2;
+      case '*': return (int32_t)val1 * (int32_t)val2;
+      case '/': return (int32_t)val1 / (int32_t)val2;
       default: assert(0);
     }
   }
