@@ -190,7 +190,7 @@ int get_operator_priority(int type) {
     case '-': return 1;
     case '*':
     case '/': return 2;
-    case TK_NEG: return 2;
+    case TK_NEG: return 3;
     default: return 100;
   }
 }
