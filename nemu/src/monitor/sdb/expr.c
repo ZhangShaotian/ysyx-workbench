@@ -13,6 +13,7 @@
 * See the Mulan PSL v2 for more details.
 ***************************************************************************************/
 
+// This version supports negative sign '-' arithmetic, e.g. --1 = 1; 1+-1=0
 #include <isa.h>
 
 /* We use the POSIX regex functions to process regular expressions.
