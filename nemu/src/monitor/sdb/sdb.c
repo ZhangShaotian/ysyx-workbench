@@ -103,10 +103,10 @@ static int cmd_info(char *args) {
 static int cmd_expr(char *args){
   bool success = true;
   word_t temp_result = expr(args, &success);
-  //int32_t result = (int32_t) temp_result;
+  int32_t result = (int32_t) temp_result;
 
   if (success) {
-    printf("Result: %d\n", temp_result);
+    printf("Result: %d\n", result);
   } else {
     printf("Failed to evaluate expression: %s\n", args);
   }
