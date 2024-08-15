@@ -267,7 +267,7 @@ word_t eval(int p, int q, bool *success){
   }
   else{
     int op = find_main_operator(p, q);
-    printf("op: %d\n", op);
+    printf("Evaluating expression from %d to %d, main operator at %d\n", p, q, op);//Debug
     if (op == -1) {
       // Error messages are handled within find_main_operator(), no additional logging needed here
       *success = false;
@@ -280,12 +280,14 @@ word_t eval(int p, int q, bool *success){
     * rather than being mistakenly processed as a binary operator.
     */
     if (tokens[op].type == TK_NEG) {
+      printf("Unary minus detected at position %d, evaluating right-hand side\n", op);//Debug
       word_t val = eval(op + 1, q, success);
       return -val;
     }
 
     word_t val1 = eval(p, op - 1, success);
     word_t val2 = eval(op + 1, q, success);
+    printf("val1: %d, val2: %d, operator: %c\n", val1, val2, tokens[op].type);//Debug
 
     switch (tokens[op].type) {
       case '+': return val1 + val2;
