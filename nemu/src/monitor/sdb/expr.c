@@ -209,10 +209,10 @@ int find_main_operator(int p, int q) {
                                 tokens[i].type == '*' || tokens[i].type == '/' ||
                                 tokens[i].type == TK_NEG)) {
       // Ensure the first TK_NEG is selected as the main operator
-      if(tokens[i].type == TK_NEG){
-        op = i;
-        break;
-      }
+      //if(tokens[i].type == TK_NEG){
+      //  op = i;
+      //  break;
+      //}
       // Check if the operator has both left and right operands for binary operators
       if (tokens[i].type != TK_NEG) {
         if (i == p) {
