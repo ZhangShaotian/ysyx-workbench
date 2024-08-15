@@ -226,7 +226,7 @@ int find_main_operator(int p, int q) {
           return -1;  // Return immediately after detecting an error
         }
         if ((tokens[i-1].type != TK_NUM && tokens[i-1].type != ')') ||
-            (tokens[i+1].type != TK_NUM && tokens[i+1].type != '(' && tokens[i-1].type != TK_NEG)) {
+            (tokens[i+1].type != TK_NUM && tokens[i+1].type != '(' && tokens[i+1].type != TK_NEG)) {
           // If the operator doesn't have valid operands on both sides, skip it
           printf("Error: Operator '%c' at position %d has invalid operands on one or both sides.\n", tokens[i].type, i);
           return -1;  // Return immediately after detecting an error
