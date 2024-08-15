@@ -208,11 +208,18 @@ int find_main_operator(int p, int q) {
     if (bracket_level == 0 && (tokens[i].type == '+' || tokens[i].type == '-' ||
                                 tokens[i].type == '*' || tokens[i].type == '/' ||
                                 tokens[i].type == TK_NEG)) {
-      // Ensure the first TK_NEG is selected as the main operator
-      //if(tokens[i].type == TK_NEG){
-      //  op = i;
-      //  break;
-      //}
+      // Ensure the first TK_NEG is always selected as the main operator in the expression like: ----1
+      if(tokens[i].type == TK_NEG){
+        if(i == p || tokens[i-1].type != TK_NEG){
+          int priority = get_operator_priority(tokens[i].type);
+          if (priority <= min_priority) {
+            min_priority = priority;
+            op = i;
+          }
+          continue; // Continue checking other tokens, avoiding selecting the following negative sign as
+                    // main operator due to the code below.
+        }
+      }
       // Check if the operator has both left and right operands for binary operators
       if (tokens[i].type != TK_NEG) {
         if (i == p) {
