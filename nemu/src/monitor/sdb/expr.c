@@ -302,10 +302,10 @@ word_t eval(int p, int q, bool *success){
     printf("val1: %d, val2: %d, operator: %c\n", val1, val2, tokens[op].type);//Debug
 
     switch (tokens[op].type) {
-      case '+': return (int32_t)val1 + (int32_t)val2;
-      case '-': return (int32_t)val1 - (int32_t)val2;
-      case '*': return (int32_t)val1 * (int32_t)val2;
-      case '/': return (int32_t)val1 / (int32_t)val2;
+      case '+': return val1 + val2;
+      case '-': return val1 - val2;
+      case '*': return val1 * val2;
+      case '/': return val1 / val2;
       default: assert(0);
     }
   }
