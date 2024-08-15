@@ -106,7 +106,7 @@ static int cmd_expr(char *args){
   int32_t result = (int32_t) temp_result;
 
   if (success) {
-    printf("Result: %u\n", result);
+    printf("Result: %d\n", result);
   } else {
     printf("Failed to evaluate expression: %s\n", args);
   }
