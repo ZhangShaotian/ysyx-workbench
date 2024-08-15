@@ -22,7 +22,7 @@
 
 enum {
   TK_NOTYPE = 256, TK_EQ,
-  TK_NUM
+  TK_NUM, TK_NEG
   /* TODO: Add more token types */
 
 };
@@ -124,7 +124,6 @@ static bool make_token(char *e) {
             break;
           case TK_NUM:
           case '+':
-          case '-':
           case '*':
           case '/':
           case '(':
@@ -135,6 +134,20 @@ static bool make_token(char *e) {
             tokens[nr_token].str[substr_len] = '\0';
             nr_token++;
             break;
+
+          case '-':
+            if (nr_token == 0 || tokens[nr_token - 1].type == '(' ||
+                tokens[nr_token - 1].type == '+' || tokens[nr_token - 1].type == '-' ||
+                tokens[nr_token - 1].type == '*' || tokens[nr_token - 1].type == '/') {
+              tokens[nr_token].type = TK_NEG; // Identify '-' as a negative sign
+            } else {
+              tokens[nr_token].type = '-'; // Identify '-' as a minus sign
+            }
+            strncpy(tokens[nr_token].str, substr_start, substr_len);
+            tokens[nr_token].str[substr_len] = '\0';
+            nr_token++;
+            break;
+
           default: 
             printf("Unknown token type: %d\n", rules[i].token_type);
             break;
@@ -174,6 +187,7 @@ int get_operator_priority(int type) {
     case '-': return 1;
     case '*':
     case '/': return 2;
+    case TK_NEG: return 2;
     default: return 100;
   }
 }
@@ -189,23 +203,26 @@ int find_main_operator(int p, int q) {
     if (tokens[i].type == ')') bracket_level--;
 
     if (bracket_level == 0 && (tokens[i].type == '+' || tokens[i].type == '-' ||
-                                tokens[i].type == '*' || tokens[i].type == '/')) {
-      // Check if the operator has both left and right operands
-      if (i == p) {
-        // If the operator is at the beginning, it is invalid
-        printf("Error: Operator '%c' at position %d has no left operand.\n", tokens[i].type, i);
-        return -1;  // Return immediately after detecting an error
-      }
-      if (i == q) {
-        // If the operator is at the end, it is invalid
-        printf("Error: Operator '%c' at position %d has no right operand.\n", tokens[i].type, i);
-        return -1;  // Return immediately after detecting an error
-      }
-      if ((tokens[i-1].type != TK_NUM && tokens[i-1].type != ')') ||
-          (tokens[i+1].type != TK_NUM && tokens[i+1].type != '(')) {
-        // If the operator doesn't have valid operands on both sides, skip it
-        printf("Error: Operator '%c' at position %d has invalid operands on one or both sides.\n", tokens[i].type, i);
-        return -1;  // Return immediately after detecting an error
+                                tokens[i].type == '*' || tokens[i].type == '/' ||
+                                tokens[i].type == TK_NEG)) {
+      // Check if the operator has both left and right operands for binary operators
+      if (tokens[i].type != TK_NEG) {
+        if (i == p) {
+          // If the operator is at the beginning, it is invalid
+          printf("Error: Operator '%c' at position %d has no left operand.\n", tokens[i].type, i);
+          return -1;  // Return immediately after detecting an error
+        }
+        if (i == q) {
+          // If the operator is at the end, it is invalid
+          printf("Error: Operator '%c' at position %d has no right operand.\n", tokens[i].type, i);
+          return -1;  // Return immediately after detecting an error
+        }
+        if ((tokens[i-1].type != TK_NUM && tokens[i-1].type != ')') ||
+            (tokens[i+1].type != TK_NUM && tokens[i+1].type != '(')) {
+          // If the operator doesn't have valid operands on both sides, skip it
+          printf("Error: Operator '%c' at position %d has invalid operands on one or both sides.\n", tokens[i].type, i);
+          return -1;  // Return immediately after detecting an error
+        }
       }
 
       int priority = get_operator_priority(tokens[i].type);
@@ -247,10 +264,21 @@ word_t eval(int p, int q, bool *success){
   }
   else{
     int op = find_main_operator(p, q);
+    printf("op: %d\n", op);
     if (op == -1) {
       // Error messages are handled within find_main_operator(), no additional logging needed here
       *success = false;
       return 0;
+    }
+    
+    /**
+    * Handle unary minus (TK_NEG) by evaluating the expression to its right 
+    * and negating the result. This ensures TK_NEG is treated as a unary operator 
+    * rather than being mistakenly processed as a binary operator.
+    */
+    if (tokens[op].type == TK_NEG) {
+      word_t val = eval(op + 1, q, success);
+      return -val;
     }
 
     word_t val1 = eval(p, op - 1, success);
