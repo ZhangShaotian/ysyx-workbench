@@ -138,7 +138,8 @@ static bool make_token(char *e) {
           case '-':
             if (nr_token == 0 || tokens[nr_token - 1].type == '(' ||
                 tokens[nr_token - 1].type == '+' || tokens[nr_token - 1].type == '-' ||
-                tokens[nr_token - 1].type == '*' || tokens[nr_token - 1].type == '/') {
+                tokens[nr_token - 1].type == '*' || tokens[nr_token - 1].type == '/' ||
+                tokens[nr_token - 1].type == TK_NEG) {
               tokens[nr_token].type = TK_NEG; // Identify '-' as a negative sign
             } else {
               tokens[nr_token].type = '-'; // Identify '-' as a minus sign
