@@ -216,9 +216,10 @@ int find_main_operator(int p, int q) {
             min_priority = priority;
             op = i;
           }
-          continue; // Continue checking other tokens, avoiding selecting the following negative sign as
+          //continue; // Continue checking other tokens, avoiding selecting the following negative sign as
                     // main operator due to the code below.
         }
+        continue;
       }
       // Check if the operator has both left and right operands for binary operators
       if (tokens[i].type != TK_NEG) {
