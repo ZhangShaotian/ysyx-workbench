@@ -132,6 +132,7 @@ static bool make_token(char *e) {
             tokens[nr_token].type = rules[i].token_type;
             strncpy(tokens[nr_token].str, substr_start, substr_len);
             tokens[nr_token].str[substr_len] = '\0';
+            printf("Token %d: type=%d, str=%s\n", nr_token, tokens[nr_token].type, tokens[nr_token].str);//Debug
             nr_token++;
             break;
 
@@ -146,6 +147,7 @@ static bool make_token(char *e) {
             }
             strncpy(tokens[nr_token].str, substr_start, substr_len);
             tokens[nr_token].str[substr_len] = '\0';
+            printf("Token %d: type=%d, str=%s\n", nr_token, tokens[nr_token].type, tokens[nr_token].str);//Debug
             nr_token++;
             break;
 
