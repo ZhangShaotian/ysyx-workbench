@@ -14,10 +14,13 @@
 ***************************************************************************************/
 
 #include <common.h>
+#include "./monitor/sdb/test-expr.h"
+#include "./monitor/sdb/sdb.h"
 
 void init_monitor(int, char *[]);
 void am_init_monitor();
 void engine_start();
+void test_expr(const char *filepath);
 int is_exit_status_bad();
 
 int main(int argc, char *argv[]) {
@@ -30,6 +33,9 @@ int main(int argc, char *argv[]) {
 
   /* Start engine. */
   engine_start();
+  
+  /* Test expressions in the input file */
+  test_expr("/home/win/ysyx-workbench/nemu/tools/gen-expr/input");
 
   return is_exit_status_bad();
 }

@@ -14,6 +14,7 @@
 ***************************************************************************************/
 
 // This version supports negative sign '-' arithmetic, e.g. --1 = 1; 1+-1=0
+
 #include <isa.h>
 
 /* We use the POSIX regex functions to process regular expressions.
@@ -81,7 +82,7 @@ typedef struct token {
   char str[32];
 } Token;
 
-static Token tokens[32] __attribute__((used)) = {};
+static Token tokens[30000000] __attribute__((used)) = {};// Modified the length of tokens[] from 32 to this new number
 static int nr_token __attribute__((used))  = 0;
 
 /**
@@ -109,9 +110,9 @@ static bool make_token(char *e) {
         char *substr_start = e + position;
         int substr_len = pmatch.rm_eo;
 
-        Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
+       /* Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
             i, rules[i].regex, position, substr_len, substr_len, substr_start);
-
+        */
         position += substr_len;
 
         /* TODO: Now a new token is recognized with rules[i]. Add codes
@@ -133,7 +134,6 @@ static bool make_token(char *e) {
             tokens[nr_token].type = rules[i].token_type;
             strncpy(tokens[nr_token].str, substr_start, substr_len);
             tokens[nr_token].str[substr_len] = '\0';
-            printf("Token %d: type=%d, str=%s\n", nr_token, tokens[nr_token].type, tokens[nr_token].str);//Debug
             nr_token++;
             break;
 
@@ -148,7 +148,6 @@ static bool make_token(char *e) {
             }
             strncpy(tokens[nr_token].str, substr_start, substr_len);
             tokens[nr_token].str[substr_len] = '\0';
-            printf("Token %d: type=%d, str=%s\n", nr_token, tokens[nr_token].type, tokens[nr_token].str);//Debug
             nr_token++;
             break;
 
@@ -280,7 +279,6 @@ word_t eval(int p, int q, bool *success){
   }
   else{
     int op = find_main_operator(p, q);
-    printf("Evaluating expression from %d to %d, main operator at %d\n", p, q, op);//Debug
     if (op == -1) {
       // Error messages are handled within find_main_operator(), no additional logging needed here
       *success = false;
@@ -293,14 +291,12 @@ word_t eval(int p, int q, bool *success){
     * rather than being mistakenly processed as a binary operator.
     */
     if (tokens[op].type == TK_NEG) {
-      printf("Unary minus detected at position %d, evaluating right-hand side\n", op);//Debug
       word_t val = eval(op + 1, q, success);
       return -val;
     }
 
     word_t val1 = eval(p, op - 1, success);
     word_t val2 = eval(op + 1, q, success);
-    printf("val1: %d, val2: %d, operator: %c\n", val1, val2, tokens[op].type);//Debug
 
     switch (tokens[op].type) {
       case '+': return val1 + val2;
@@ -332,15 +328,4 @@ word_t expr(char *e, bool *success) {
   /* TODO: Insert codes to evaluate the expression. */
   return eval(0, nr_token - 1, success);
 } 
-
-
-
-
-
-
-
-
-
-
-
 

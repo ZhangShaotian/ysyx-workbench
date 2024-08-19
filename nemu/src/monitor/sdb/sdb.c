@@ -18,6 +18,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "sdb.h"
+//#include "test-expr.h"// Just a try, should remove it later
 
 static int is_batch_mode = false;
 

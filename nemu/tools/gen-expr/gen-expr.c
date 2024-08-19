@@ -31,8 +31,56 @@ static char *code_format =
 "  return 0; "
 "}";
 
+// Function to append a random number (as a string) to the buffer
+static void gen_num() {
+  char num[4];
+  unsigned int value;
+  do {
+    value = (rand() % 100); 
+  } while (value == 0 && buf[strlen(buf) - 1] == '/'); 
+
+  sprintf(num, "%u", value);
+  strcat(buf, num);
+}
+
+// Function to append a character to the buffer
+static void gen(char a){
+  char str[2];
+  str[0] = a;
+  str[1] = '\0';
+  strcat(buf, str);
+}
+
+// Function to append a random operator to the buffer
+static void gen_rand_op(){
+  char ops[] = "+-*/";
+  char op = ops[rand() % 4]; // Randomly select one of the four operators
+  gen(op);
+}
+
+// Function to return a random number less than n
+static uint32_t choose(uint32_t n){
+  return rand() % n;
+}
+
+// Function to generate a random expression
 static void gen_rand_expr() {
-  buf[0] = '\0';
+  //buf[0] = '\0';
+  switch (choose(3)){
+    case 0: gen_num();
+            break;
+    case 1: gen('('); gen_rand_expr(); gen(')');
+            break;
+    default: 
+            gen_rand_expr(); 
+            gen_rand_op(); 
+            if (buf[strlen(buf) - 1] == '/') {
+              gen_num(); 
+            } else {
+              gen_rand_expr();
+            }
+            break;
+  }
 }
 
 int main(int argc, char *argv[]) {
@@ -44,6 +92,7 @@ int main(int argc, char *argv[]) {
   }
   int i;
   for (i = 0; i < loop; i ++) {
+    buf[0] = '\0';
     gen_rand_expr();
 
     sprintf(code_buf, code_format, buf);
@@ -53,7 +102,7 @@ int main(int argc, char *argv[]) {
     fputs(code_buf, fp);
     fclose(fp);
 
-    int ret = system("gcc /tmp/.code.c -o /tmp/.expr");
+    int ret = system("gcc -O2 -MMD -Wall -Werror -Wno-overflow /tmp/.code.c -o /tmp/.expr");
     if (ret != 0) continue;
 
     fp = popen("/tmp/.expr", "r");
@@ -61,9 +110,16 @@ int main(int argc, char *argv[]) {
 
     int result;
     ret = fscanf(fp, "%d", &result);
-    pclose(fp);
+    pclose(fp); 
 
     printf("%u %s\n", result, buf);
+    
+    // Progress display: update progress on the same line
+    fprintf(stderr, "\rProgress: %d/%d expressions generated", i + 1, loop);
   }
+  
+  // Print a newline at the end to move the cursor to the next line
+  fprintf(stderr, "\n");
+
   return 0;
 }
