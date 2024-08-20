@@ -15,6 +15,7 @@
 
 #include <isa.h>
 #include "local-include/reg.h"
+#include <string.h>
 
 const char *regs[] = {
   "$0", "ra", "sp", "gp", "tp", "t0", "t1", "t2",
@@ -31,5 +32,28 @@ void isa_reg_display() {
 }
 
 word_t isa_reg_str2val(const char *s, bool *success) {
-  return 0;
+  // Check if the input string starts with $
+  if (s[0] == '$') {
+    s++; // Skip the $ symbol
+  }
+
+  // Traverse the regs[] array to find the matching register name
+  for (int i = 0; i < 32; i++) {
+    if (strcmp(s, regs[i]) == 0) {
+      // If a match is found, return the corresponding register value
+      *success = true;
+      return cpu.gpr[i]; // cpu.gpr is the general-purpose register array
+    }
+  }
+
+  // If no match is found, check if the string refers to the program counter (PC)
+  if (strcmp(s, "pc") == 0) {
+    *success = true;
+    return cpu.pc; // Return the value of the program counter (PC)
+  }
+
+  // If no match is found at all, indicate failure
+  *success = false;
+  return 0; // Return a default error value
 }
+
