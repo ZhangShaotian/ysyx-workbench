@@ -24,7 +24,7 @@
 
 enum {
   TK_NOTYPE = 256, TK_EQ, TK_NEQ,
-  TK_NUM, TK_NEG, TK_HEX,
+  TK_NUM, TK_NEG, TK_HEX, TK_REG,
   /* TODO: Add more token types */
 
 };
@@ -44,6 +44,7 @@ static struct rule {
   {"!=", TK_NEQ},       // not equal
   {"0[xX][0-9a-fA-F]+", TK_HEX}, // hexadecimal number
   {"[0-9]+", TK_NUM},   // decimal number
+  {"\\$\\$?[a-zA-Z0-9]+", TK_REG}, // register name
   {"\\-", '-'},         // minus
   {"\\*", '*'},         // multiply
   {"/", '/'},           // divide
@@ -128,6 +129,7 @@ static bool make_token(char *e) {
             break;
           case TK_NUM:
           case TK_HEX:
+          case TK_REG:
           case '+':
           case '*':
           case '/':
@@ -242,11 +244,13 @@ int find_main_operator(int p, int q) {
         }
         if ((tokens[i-1].type != TK_NUM 
               && tokens[i-1].type != TK_HEX 
-              && tokens[i-1].type != ')') ||
+              && tokens[i-1].type != ')'
+              && tokens[i-1].type != TK_REG) ||
             (tokens[i+1].type != TK_NUM 
              && tokens[i+1].type != TK_HEX 
              && tokens[i+1].type != '(' 
-             && tokens[i+1].type != TK_NEG)) {
+             && tokens[i+1].type != TK_NEG
+             && tokens[i+1].type != TK_REG)) {
           // If the operator doesn't have valid operands on both sides, skip it
           printf("Error: Operator '%c' at position %d has invalid operands on one or both sides.\n", tokens[i].type, i);
           return -1;  // Return immediately after detecting an error
@@ -268,6 +272,8 @@ int find_main_operator(int p, int q) {
   return op;
 }
 
+bool is_hex = false;
+
 // Evaluate the value of the expression by Divide-and-Conquer Algorithm
 word_t eval(int p, int q, bool *success){
   if (p > q) {
@@ -279,7 +285,11 @@ word_t eval(int p, int q, bool *success){
     if(tokens[p].type == TK_NUM){
       return (uint32_t)atoi(tokens[p].str);
     }else if(tokens[p].type == TK_HEX){
+      is_hex = true; // Once a hexadecimal is found, is_hex stays true
       return (uint32_t)strtol(tokens[p].str, NULL, 16);
+    }else if(tokens[p].type == TK_REG ){
+      is_hex = true; // Once a register is found, is_hex stays true
+      return isa_reg_str2val(tokens[p].str, success);
     }else{
       printf("Error: Single token is not a number.\n");
       *success = false;

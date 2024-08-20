@@ -101,15 +101,19 @@ static int cmd_info(char *args) {
   return 0;
 }
 
+extern bool is_hex;
+
 static int cmd_expr(char *args){
   bool success = true;
   word_t temp_result = expr(args, &success);
   int32_t result = (int32_t) temp_result;
 
   if (success) {
-    printf("Result: %d\n", result);
-  } else {
-    printf("Failed to evaluate expression: %s\n", args);
+    if (is_hex) {
+      printf("Result in hexadecimal format: %#x\n", result); // Use %#x format for hexadecimal output
+    } else {
+      printf("Result in decimal format: %u\n", result);  // Use %u format for decimal output
+    }
   }
 
   return 0;
