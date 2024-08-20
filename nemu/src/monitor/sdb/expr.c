@@ -24,7 +24,7 @@
 
 enum {
   TK_NOTYPE = 256, TK_EQ, TK_NEQ,
-  TK_NUM, TK_NEG
+  TK_NUM, TK_NEG, TK_HEX,
   /* TODO: Add more token types */
 
 };
@@ -42,12 +42,13 @@ static struct rule {
   {"\\+", '+'},         // plus
   {"==", TK_EQ},        // equal
   {"!=", TK_NEQ},       // not equal
+  {"0[xX][0-9a-fA-F]+", TK_HEX}, // hexadecimal number
   {"[0-9]+", TK_NUM},   // decimal number
   {"\\-", '-'},         // minus
   {"\\*", '*'},         // multiply
   {"/", '/'},           // divide
   {"\\(", '('},         // left parentheses
-  {"\\)", ')'},         // right parentheses
+  {"\\)", ')'},         // right parentheses 
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -126,6 +127,7 @@ static bool make_token(char *e) {
             // Skip spaces, do nothing
             break;
           case TK_NUM:
+          case TK_HEX:
           case '+':
           case '*':
           case '/':
@@ -238,8 +240,13 @@ int find_main_operator(int p, int q) {
           printf("Error: Operator '%c' at position %d has no right operand.\n", tokens[i].type, i);
           return -1;  // Return immediately after detecting an error
         }
-        if ((tokens[i-1].type != TK_NUM && tokens[i-1].type != ')') ||
-            (tokens[i+1].type != TK_NUM && tokens[i+1].type != '(' && tokens[i+1].type != TK_NEG)) {
+        if ((tokens[i-1].type != TK_NUM 
+              && tokens[i-1].type != TK_HEX 
+              && tokens[i-1].type != ')') ||
+            (tokens[i+1].type != TK_NUM 
+             && tokens[i+1].type != TK_HEX 
+             && tokens[i+1].type != '(' 
+             && tokens[i+1].type != TK_NEG)) {
           // If the operator doesn't have valid operands on both sides, skip it
           printf("Error: Operator '%c' at position %d has invalid operands on one or both sides.\n", tokens[i].type, i);
           return -1;  // Return immediately after detecting an error
@@ -270,7 +277,9 @@ word_t eval(int p, int q, bool *success){
   }
   else if (p == q){
     if(tokens[p].type == TK_NUM){
-      return atoi(tokens[p].str);
+      return (uint32_t)atoi(tokens[p].str);
+    }else if(tokens[p].type == TK_HEX){
+      return (uint32_t)strtol(tokens[p].str, NULL, 16);
     }else{
       printf("Error: Single token is not a number.\n");
       *success = false;
