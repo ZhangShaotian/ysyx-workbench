@@ -16,3 +16,18 @@
 NAME = gen-expr
 SRCS = gen-expr.c
 include $(NEMU_HOME)/scripts/build.mk
+
+# Define a new target that takes a number as an argument
+.PHONY: generate
+
+generate: $(BINARY)
+	@$(BINARY) $(ARG) > $(BUILD_DIR)/input
+	@echo "Generated expressions and saved to '$(BUILD_DIR)/input'"
+
+# Only execute generate if a valid number is provided
+run: $(BINARY)
+	@if [ -z "$(n)" ]; then \
+	    echo "Please provide a number using make run n=<number>"; \
+	else \
+	    $(MAKE) generate ARG=$(n); \
+	fi

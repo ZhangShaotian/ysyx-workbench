@@ -35,7 +35,7 @@ int main(int argc, char *argv[]) {
   engine_start();
   
   /* Test expressions in the input file */
-  test_expr("/home/win/ysyx-workbench/nemu/tools/gen-expr/input");
+  test_expr("/home/win/ysyx-workbench/nemu/tools/gen-expr/build/input");
 
   return is_exit_status_bad();
 }
