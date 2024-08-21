@@ -25,7 +25,7 @@
 enum {
   TK_NOTYPE = 256, TK_EQ, TK_NEQ,
   TK_NUM, TK_NEG, TK_HEX, TK_REG,
-  TK_AND,
+  TK_AND, TK_DEREF,
   /* TODO: Add more token types */
 
 };
@@ -47,8 +47,8 @@ static struct rule {
   {"0[xX][0-9a-fA-F]+", TK_HEX}, // hexadecimal number
   {"[0-9]+", TK_NUM},   // decimal number
   {"\\$\\$?[a-zA-Z0-9]+", TK_REG}, // register name
-  {"\\-", '-'},         // minus
-  {"\\*", '*'},         // multiply
+  {"\\-", '-'},         // minus or negative sign
+  {"\\*", '*'},         // multiply or dereference
   {"/", '/'},           // divide
   {"\\(", '('},         // left parentheses
   {"\\)", ')'},         // right parentheses 
@@ -133,7 +133,6 @@ static bool make_token(char *e) {
           case TK_HEX:
           case TK_REG:
           case '+':
-          case '*':
           case '/':
           case '(':
           case ')':
@@ -151,7 +150,8 @@ static bool make_token(char *e) {
             if (nr_token == 0 || tokens[nr_token - 1].type == '(' ||
                 tokens[nr_token - 1].type == '+' || tokens[nr_token - 1].type == '-' ||
                 tokens[nr_token - 1].type == '*' || tokens[nr_token - 1].type == '/' ||
-                tokens[nr_token - 1].type == TK_NEG) {
+                tokens[nr_token - 1].type == TK_NEG || tokens[nr_token - 1].type == TK_EQ ||
+                tokens[nr_token - 1].type == TK_NEQ || tokens[nr_token - 1].type == TK_AND) {
               tokens[nr_token].type = TK_NEG; // Identify '-' as a negative sign
             } else {
               tokens[nr_token].type = '-'; // Identify '-' as a minus sign
@@ -160,6 +160,14 @@ static bool make_token(char *e) {
             tokens[nr_token].str[substr_len] = '\0';
             nr_token++;
             break;
+          
+          case '*':
+            tokens[nr_token].type = rules[i].token_type;
+            strncpy(tokens[nr_token].str, substr_start, substr_len);
+            tokens[nr_token].str[substr_len] = '\0';
+            nr_token++;
+            break;
+
 
           default: 
             printf("Unknown token type: %d\n", rules[i].token_type);

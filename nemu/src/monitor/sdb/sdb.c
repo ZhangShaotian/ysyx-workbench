@@ -112,7 +112,7 @@ static int cmd_expr(char *args){
     if (is_hex) {
       printf("Result in hexadecimal format: %#x\n", result); // Use %#x format for hexadecimal output
     } else {
-      printf("Result in decimal format: %u\n", result);  // Use %u format for decimal output
+      printf("Result in decimal format: %d\n", result);  // Use %d format for decimal output
     }
   }
 
