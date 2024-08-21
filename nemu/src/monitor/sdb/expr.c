@@ -25,6 +25,7 @@
 enum {
   TK_NOTYPE = 256, TK_EQ, TK_NEQ,
   TK_NUM, TK_NEG, TK_HEX, TK_REG,
+  TK_AND,
   /* TODO: Add more token types */
 
 };
@@ -42,6 +43,7 @@ static struct rule {
   {"\\+", '+'},         // plus
   {"==", TK_EQ},        // equal
   {"!=", TK_NEQ},       // not equal
+  {"&&", TK_AND},       // logical AND
   {"0[xX][0-9a-fA-F]+", TK_HEX}, // hexadecimal number
   {"[0-9]+", TK_NUM},   // decimal number
   {"\\$\\$?[a-zA-Z0-9]+", TK_REG}, // register name
@@ -137,6 +139,7 @@ static bool make_token(char *e) {
           case ')':
           case TK_EQ:
           case TK_NEQ:
+          case TK_AND:
             // Store the token
             tokens[nr_token].type = rules[i].token_type;
             strncpy(tokens[nr_token].str, substr_start, substr_len);
@@ -193,6 +196,7 @@ bool check_parentheses(int p, int q){
 // Return the priority number of the operators to find_main_operator()
 int get_operator_priority(int type) {
   switch (type) {
+    case TK_AND: return -1;
     case TK_EQ:
     case TK_NEQ: return 0;
     case '+':
@@ -217,7 +221,7 @@ int find_main_operator(int p, int q) {
     if (bracket_level == 0 && (tokens[i].type == '+' || tokens[i].type == '-' ||
                                 tokens[i].type == '*' || tokens[i].type == '/' ||
                                 tokens[i].type == TK_NEG || tokens[i].type == TK_EQ ||
-                                tokens[i].type == TK_NEQ)) {
+                                tokens[i].type == TK_NEQ || tokens[i].type == TK_AND)) {
       // Ensure the first TK_NEG is always selected as the main operator in the expression like: ----1
       if(tokens[i].type == TK_NEG){
         if(i == p || tokens[i-1].type != TK_NEG){
@@ -330,6 +334,7 @@ word_t eval(int p, int q, bool *success){
       case '/': return (int32_t)val1 / (int32_t)val2;
       case TK_EQ: return val1 == val2;
       case TK_NEQ: return val1 != val2;
+      case TK_AND: return val1 && val2;
       default: assert(0);
     }
   }
@@ -353,6 +358,7 @@ word_t expr(char *e, bool *success) {
   }
 
   /* TODO: Insert codes to evaluate the expression. */
+  is_hex = false;
   return eval(0, nr_token - 1, success);
 } 
 
