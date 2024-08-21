@@ -162,7 +162,13 @@ static bool make_token(char *e) {
             break;
           
           case '*':
-            tokens[nr_token].type = rules[i].token_type;
+            if (nr_token != 0 
+                &&(tokens[nr_token - 1].type == TK_NUM || tokens[nr_token - 1].type == TK_HEX ||
+                   tokens[nr_token - 1].type == TK_REG || tokens[nr_token - 1].type == ')')){
+              tokens[nr_token].type = '*'; // Identify '*' as a multiply
+            } else {
+              tokens[nr_token].type = TK_DEREF; // Identify '*' as dereference
+            }
             strncpy(tokens[nr_token].str, substr_start, substr_len);
             tokens[nr_token].str[substr_len] = '\0';
             nr_token++;
@@ -211,9 +217,32 @@ int get_operator_priority(int type) {
     case '-': return 1;
     case '*':
     case '/': return 2;
+    case TK_DEREF:
     case TK_NEG: return 3;
     default: return 100;
   }
+}
+
+// Converts a token type integer to its corresponding string name to improve readability.
+static const char* get_token_type_name(int type) {
+    switch (type) {
+        case TK_NOTYPE: return "TK_NOTYPE";
+        case TK_EQ: return "TK_EQ";
+        case TK_NEQ: return "TK_NEQ";
+        case TK_NUM: return "TK_NUM";
+        case TK_NEG: return "TK_NEG";
+        case TK_HEX: return "TK_HEX";
+        case TK_REG: return "TK_REG";
+        case TK_AND: return "TK_AND";
+        case TK_DEREF: return "TK_DEREF";
+        case '+': return "PLUS";
+        case '-': return "MINUS";
+        case '*': return "MUL";
+        case '/': return "DIV";
+        case '(': return "LPAREN";
+        case ')': return "RPAREN";
+        default: return "UNKNOWN";
+    }
 }
 
 // Return the operator position with the lowest priority
@@ -223,15 +252,19 @@ int find_main_operator(int p, int q) {
   int min_priority = 100;
 
   for (int i = p; i <= q; i++) {
+    //Prints the token's index, type, and string to the terminal to improve the readability of the output.
+    printf("Token %d: type = %s, str = '%s'\n", i, get_token_type_name(tokens[i].type), tokens[i].str);
+
     if (tokens[i].type == '(') bracket_level++;
     if (tokens[i].type == ')') bracket_level--;
 
     if (bracket_level == 0 && (tokens[i].type == '+' || tokens[i].type == '-' ||
                                 tokens[i].type == '*' || tokens[i].type == '/' ||
                                 tokens[i].type == TK_NEG || tokens[i].type == TK_EQ ||
-                                tokens[i].type == TK_NEQ || tokens[i].type == TK_AND)) {
+                                tokens[i].type == TK_NEQ || tokens[i].type == TK_AND ||
+                                tokens[i].type == TK_DEREF)) {
       // Ensure the first TK_NEG is always selected as the main operator in the expression like: ----1
-      if(tokens[i].type == TK_NEG){
+      if(tokens[i].type == TK_NEG){ // Check if the operator has right operands for unary operators: negative sign
         if(i == p || tokens[i-1].type != TK_NEG){
           int priority = get_operator_priority(tokens[i].type);
           if (priority <= min_priority) {
@@ -239,11 +272,20 @@ int find_main_operator(int p, int q) {
             op = i;
           }
         }
-        continue; // Continue to the next token, ensuring that subsequent negative signs are not mistakenly 
-                  // identified as the main operator in the following priority comparison.
-      }
-      // Check if the operator has both left and right operands for binary operators
-      if (tokens[i].type != TK_NEG) {
+        continue; // Skip further checks for TK_NEG
+      }else if(tokens[i].type == TK_DEREF){ // Check if the operator has right operands for unary operators: dereference
+        // Ensure it's a valid unary operator (e.g., it should not be at the end or misused)
+        if (i == q) {
+          printf("Error: Dereference operator '*' at position %d has no right operand.\n", i);
+          return -1;  // Return immediately after detecting an error
+        }
+        int priority = get_operator_priority(tokens[i].type);
+        if (priority <= min_priority) {
+          min_priority = priority;
+          op = i;
+        }
+        continue; // Skip further checks for TK_DEREF
+      }else{ // Check if the operator has both left and right operands for binary operators
         if (i == p) {
           // If the operator is at the beginning, it is invalid
           printf("Error: Operator '%c' at position %d has no left operand.\n", tokens[i].type, i);
@@ -330,6 +372,16 @@ word_t eval(int p, int q, bool *success){
     if (tokens[op].type == TK_NEG) {
       word_t val = eval(op + 1, q, success);
       return -val;
+    }
+
+    // Handle pointer dereference (TK_DEREF)
+    if (tokens[op].type == TK_DEREF) {
+      word_t val = eval(op + 1, q, success);
+      if (*success) {
+        return *(word_t *)(uintptr_t)val; // Dereference the pointer using uintptr_t
+      } else {
+        return 0;
+      }
     }
 
     word_t val1 = eval(p, op - 1, success);
