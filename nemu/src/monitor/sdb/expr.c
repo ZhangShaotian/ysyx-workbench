@@ -327,6 +327,7 @@ int find_main_operator(int p, int q) {
 }
 
 bool is_hex = false;
+extern word_t vaddr_read(vaddr_t addr, int len);
 
 // Evaluate the value of the expression by Divide-and-Conquer Algorithm
 word_t eval(int p, int q, bool *success){
@@ -378,7 +379,7 @@ word_t eval(int p, int q, bool *success){
     if (tokens[op].type == TK_DEREF) {
       word_t val = eval(op + 1, q, success);
       if (*success) {
-        return *(word_t *)(uintptr_t)val; // Dereference the pointer using uintptr_t
+        return vaddr_read(val, 4); 
       } else {
         return 0;
       }
