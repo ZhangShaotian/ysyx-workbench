@@ -92,8 +92,11 @@ static int cmd_info(char *args) {
   if (strcmp(args, "r") == 0) {
     isa_reg_display(); // Call function to print register state
   } else if (strcmp(args, "w") == 0) {
-    // Here we would later implement the logic to display watchpoint information
-    printf("Watchpoint info not implemented yet.\n");
+    WP *wp = get_head();  // Use get_head() to access the static head variable in watchpoint.c
+    while (wp != NULL) {
+      printf("Watchpoint %d: %s = %u\n", wp->NO, wp->expr, wp->last_value);
+      wp = wp->next;
+    }
   } else {
     printf("Error: Unknown subcommand '%s'.\n", args);
   }
@@ -119,6 +122,18 @@ static int cmd_expr(char *args){
   return 0;
 }
 
+static int cmd_watch(char *args){
+  WP *wp = new_wp(args);
+  printf("Watchpoint %d set for expression: %s\n", wp->NO, wp->expr);
+  return 0;
+}
+
+static int cmd_delete(char *args){
+  int NO = atoi(args);
+  free_wp(NO);  
+  return 0;
+}
+
 static struct {
   const char *name;
   const char *description;
@@ -130,6 +145,8 @@ static struct {
   { "si", "Execute one or N instructions step by step. Example: 'si' or 'si 10'", cmd_si },
   { "info", "Display program status. Example: 'info r' or 'info w'", cmd_info },
   { "p", "Evaluate the value of an expression. Example: 'p $eax + 1'", cmd_expr },
+  { "w", "Set a watchpoint. Example: 'w *0x80000000'", cmd_watch },
+  { "d", "Delete a watchpoint by number. Example: 'd 2'", cmd_delete },
   /* TODO: Add more commands */
 
 };

@@ -20,4 +20,18 @@
 
 word_t expr(char *e, bool *success);
 
+// Definition of the watchpoint structure
+typedef struct watchpoint {
+  int NO;
+  struct watchpoint *next;
+  char *expr; // Dynamically allocated expression
+  uint32_t last_value; // Last evaluated value of this expression
+  /* TODO: Add more members if necessary */
+
+} WP;
+
+WP* new_wp(char *expr);   // Create a new watchpoint
+void free_wp(int NO);     // Delete a watchpoint
+WP* get_head();           // Get the head of the watchpoint list
+
 #endif

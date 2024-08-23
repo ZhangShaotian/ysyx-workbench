@@ -17,14 +17,6 @@
 
 #define NR_WP 32
 
-typedef struct watchpoint {
-  int NO;
-  struct watchpoint *next;
-
-  /* TODO: Add more members if necessary */
-
-} WP;
-
 static WP wp_pool[NR_WP] = {};
 static WP *head = NULL, *free_ = NULL;
 
@@ -40,4 +32,85 @@ void init_wp_pool() {
 }
 
 /* TODO: Implement the functionality of watchpoint */
+WP* new_wp(char *expression){
+  if(free_ == NULL){
+    assert(0 && "No free watchpoints available!");
+  }
+
+  WP *wp = free_;
+  free_ = free_->next;
+
+  wp->next = head;
+  head = wp;
+
+  wp->expr = strdup(expression);
+  assert(wp->expr != NULL && "Failed to allocate memory for expression!");
+
+  bool success = true;
+  wp->last_value = expr(wp->expr, &success);
+  assert(success && "Failed to evaluate expression when setting watchpoint!");
+
+  return wp;
+}
+
+void free_wp(int NO){
+  WP *prev = NULL;
+  WP *wp = head;
+  while(wp != NULL){
+    if(wp->NO == NO){
+      if(prev != NULL){
+        prev->next = wp->next;
+      }else{
+        head = wp->next;
+      }
+      free(wp->expr);
+      wp->expr = NULL;
+
+      wp->next = free_;
+      free_ = wp;
+      
+      // Print a message indicating the watchpoint has been deleted
+      printf("Watchpoint %d deleted.\n", NO);
+
+      return;
+    }
+ 
+    prev = wp;
+    wp = wp->next;
+  }
+  printf("No watchpoint with number %d found.\n", NO);
+}
+      
+// Function to get the head of the watchpoint list
+WP* get_head() {
+    return head;
+}    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
