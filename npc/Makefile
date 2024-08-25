@@ -82,7 +82,7 @@ MODULE_DIR := ./vsrc
 # Define source files
 # MAIN_MODULE := $(MAIN_MODULE_DIR)/main_$(MODULENAME).cpp
 #   MODULE := $(MODULE_DIR)/$(MODULENAME).v
-MAIN_MODULE := $(MAIN_MODULE_DIR)/main_sim.cpp
+MAIN_MODULE := $(abspath $(MAIN_MODULE_DIR)/main_sim.cpp)
 
 # Automatically determine the module define being used in /csrc/main_sim.cpp
 MODULE_DEFINE := -DMODULE_$(shell echo $(MODULENAME) | tr '[:lower:]' '[:upper:]')
@@ -95,9 +95,10 @@ VERILATOR_FLAGS_SIM := --trace-fst --cc --exe --build -j 0 -Wall --top-module $(
 		       --Wno-DECLFILENAME \
 		       --CFLAGS -DMODULE_NAME="\"V$(MODULENAME)\"" \
                        --CFLAGS -DHEADER_NAME_MODULE="\"V$(MODULENAME).h\"" \
-		       --CFLAGS "$(MODULE_DEFINE)"
+		       --CFLAGS "$(MODULE_DEFINE)" \
+					 --Mdir $(OBJ_DIR)
 
-# include ../Makefile
+include ../Makefile
 
 
 
@@ -113,13 +114,11 @@ sim: check_modulename $(VSRCS)
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	$(VERILATOR_SIM) $(VERILATOR_FLAGS_SIM) $(MAIN_MODULE) $(VSRCS)
 	@echo "Simulation completed"
-	@./obj_dir/V$(MODULENAME)
+	@$(OBJ_DIR)/V$(MODULENAME)
 	@gtkwave waveform.fst
 
 clean:
 	rm -rf $(BUILD_DIR)
-	rm -rf ./obj_dir
-	rm -f waveform.fst
 
 .PHONY: default all clean check_topname run sim check_modulename
 	
