@@ -23,7 +23,7 @@ void sim_init(){
   top = new MODULE_NAME;
   contextp->traceEverOn(true);
   top->trace(tfp, 99);
-  tfp->open("waveform.fst");
+  tfp->open("build/waveform.fst");
 }
 
 void sim_exit(){

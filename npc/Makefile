@@ -80,8 +80,6 @@ MAIN_MODULE_DIR := ./csrc
 MODULE_DIR := ./vsrc
 
 # Define source files
-# MAIN_MODULE := $(MAIN_MODULE_DIR)/main_$(MODULENAME).cpp
-#   MODULE := $(MODULE_DIR)/$(MODULENAME).v
 MAIN_MODULE := $(abspath $(MAIN_MODULE_DIR)/main_sim.cpp)
 
 # Automatically determine the module define being used in /csrc/main_sim.cpp
@@ -115,11 +113,10 @@ sim: check_modulename $(VSRCS)
 	$(VERILATOR_SIM) $(VERILATOR_FLAGS_SIM) $(MAIN_MODULE) $(VSRCS)
 	@echo "Simulation completed"
 	@$(OBJ_DIR)/V$(MODULENAME)
-	@gtkwave waveform.fst
+	@gtkwave $(BUILD_DIR)/waveform.fst
 
 clean:
 	rm -rf $(BUILD_DIR)
-
 .PHONY: default all clean check_topname run sim check_modulename
 	
 
