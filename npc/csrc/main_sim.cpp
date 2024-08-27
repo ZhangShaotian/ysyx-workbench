@@ -9,9 +9,14 @@
 
 VerilatedContext* contextp = NULL;
 VerilatedFstC* tfp = NULL;
-
 static MODULE_NAME* top;
 
+// Function Declarations
+void step_and_dump_wave();
+void sim_init();
+void sim_exit();
+
+// Function Definitions
 void step_and_dump_wave(){
   top->eval();
   contextp->timeInc(1);
@@ -286,25 +291,31 @@ int main() {
         step_and_dump_wave();
     }
 
+#elif defined(MODULE_RUNNING_LIGHT)
+    // Step 1: Apply reset for at least 10 cycles
+    top->rst = 1;
+    for (int i = 0; i < 10; ++i) {  // Hold reset high for 10 cycles
+        top->clk = 0;
+        step_and_dump_wave();
+        top->clk = 1;
+        step_and_dump_wave();
+    }
 
+    // Step 2: Release reset
+    top->rst = 0;
+    top->clk = 0;
+    step_and_dump_wave();
+    top->clk = 1;
+    step_and_dump_wave();
 
-
+    // Step 3: Run clock cycles to observe LED behavior
+    for (int i = 0; i < 10000; ++i) {  // Simulate 10000 clock cycles to observe the running light effect
+        top->clk = 0;
+        step_and_dump_wave();
+        top->clk = 1;
+        step_and_dump_wave();
+    }
 #endif
 	sim_exit();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
