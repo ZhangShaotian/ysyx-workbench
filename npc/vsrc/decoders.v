@@ -37,7 +37,7 @@ endmodule
 module decoder_3to8_onehot(
 	input [2:0] a,
 	input en,
-	output reg [7:0] y,
+	output reg [7:0] y
 );
 
   integer i;
