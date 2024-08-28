@@ -33,63 +33,63 @@ module top_keyboard(
 	reg [1:0] state_curr, state_next;
 	reg [7:0] key_count; // Count total key presses (0-99)
 	reg [4:0] seg7_code = 5'b11111;
-    	reg [4:0] seg6_code = 5'b11111;
+  reg [4:0] seg6_code = 5'b11111;
 	reg [4:0] seg5_code = 5'b11111;
 	reg [4:0] seg4_code = 5'b11111;
  	reg [4:0] seg3_code = 5'b11111;
-  	reg [4:0] seg2_code = 5'b11111;
+  reg [4:0] seg2_code = 5'b11111;
  	reg [4:0] seg1_code = 5'b11111;
-    	reg [4:0] seg0_code = 5'b11111;
+  reg [4:0] seg0_code = 5'b11111;
 
 	// State register
 	always @(posedge clk) begin
-        	if (!rst) begin
-            		state_curr <= IDLE;
+    if (!rst) begin
+      state_curr <= IDLE;
 			key_count <= 0;
-        	end 
+    end 
 		else begin
-            		state_curr <= state_next;
+      state_curr <= state_next;
 			if (ready && scan_code == 8'hf0) begin
-           			 key_count <= key_count + 1; 
-        		end
-		end
-    	end
+        key_count <= key_count + 1; 
+      end
+    end
+  end
 
 	// next state logic
 	always @(*) begin
 		if (ready) begin
 			case (state_curr)
-			    IDLE: begin
+      IDLE: begin
 				if (ready) begin
-				    state_next = KEY_PRESSED;
-				    nextdata_n = 0;
+				  state_next = KEY_PRESSED;
+				  nextdata_n = 0;
 				end else begin
-				    state_next = IDLE;
+				  state_next = IDLE;
 				end
-			    end
-			    KEY_PRESSED: begin
+      end
+      KEY_PRESSED: begin
 				if (scan_code == 8'hf0) begin
-				    state_next = KEY_RELEASED;
+				  state_next = KEY_RELEASED;
 				end else begin
-				    state_next = KEY_PRESSED;
-				    nextdata_n = 0;
+				  state_next = KEY_PRESSED;
+				  nextdata_n = 0;
 				end
-			    end
-			    KEY_RELEASED: begin
+      end
+			KEY_RELEASED: begin
 				if (ready) begin
-				    state_next = KEY_PRESSED;
-				    nextdata_n = 0;
+				  state_next = KEY_PRESSED;
+				  nextdata_n = 0;
 				end else begin
-				    state_next = KEY_RELEASED;
+				  state_next = KEY_RELEASED;
 				end
-			    end
-			    default: state_next = IDLE;
+      end
+      default: state_next = IDLE;
 			endcase
 			nextdata_n = 0;
 		end
 		else
 			nextdata_n = 1;
-	end
+  end
 
 	reg [7:0] seg6_code_temp = 8'b11111111;
 	reg [7:0] seg7_code_temp = 8'b11111111;
@@ -117,27 +117,26 @@ module top_keyboard(
 					seg5_code = 5'b11111;
 					seg6_code_temp = key_count % 10;
 					seg7_code_temp = (key_count / 10) % 10;
-
 				end
 				KEY_RELEASED: begin
 					seg0_code = 5'b11111;
-                                        seg1_code = 5'b11111;
-                                        seg2_code = 5'b11111;
-                                        seg3_code = 5'b11111;
-                                        seg4_code = 5'b11111;
-                                        seg5_code = 5'b11111;
+          seg1_code = 5'b11111;
+          seg2_code = 5'b11111;
+          seg3_code = 5'b11111;
+          seg4_code = 5'b11111;
+          seg5_code = 5'b11111;
 					seg6_code_temp = key_count % 10;
 					seg7_code_temp = (key_count / 10) % 10;
 				end
 				default: begin
 					seg0_code = 5'b11111;
-                                        seg1_code = 5'b11111;
-                                        seg2_code = 5'b11111;
-                                        seg3_code = 5'b11111;
-                                        seg4_code = 5'b11111;
-                                        seg5_code = 5'b11111;
-                                        seg6_code_temp = 8'b11111111;
-                                        seg7_code_temp = 8'b11111111;
+          seg1_code = 5'b11111;
+          seg2_code = 5'b11111;
+          seg3_code = 5'b11111;
+          seg4_code = 5'b11111;
+          seg5_code = 5'b11111;
+          seg6_code_temp = 8'b11111111;
+          seg7_code_temp = 8'b11111111;
 				end
 			endcase
 		end
@@ -155,7 +154,5 @@ module top_keyboard(
 	light mySeg5(.binary(seg5_code), .seg(seg5));
 	light mySeg6(.binary(seg6_code), .seg(seg6));
 	light mySeg7(.binary(seg7_code), .seg(seg7));
-
-
 
 endmodule
