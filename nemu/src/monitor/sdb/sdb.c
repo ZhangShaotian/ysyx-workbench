@@ -104,6 +104,45 @@ static int cmd_info(char *args) {
   return 0;
 }
 
+static int cmd_x(char *args) {
+  if (args == NULL) {
+    printf("Error: No arguments provided. Usage: x N EXPR\n");
+    return 0;
+  }
+
+  // Parse input arguments to get N and EXPR
+  char *n_str = strtok(args, " ");
+  char *expr_str = strtok(NULL, " ");
+
+  if (n_str == NULL || expr_str == NULL) {
+    printf("Error: Invalid arguments. Usage: x N EXPR\n");
+    return 0;
+  }
+
+  // Convert N from string to integer
+  int n = atoi(n_str);
+  if (n <= 0) {
+    printf("Error: The number of memory units to read 'N' must be positive.\n");
+    return 0;
+  }
+
+  // Evaluate the expression to get the starting address
+  bool success = true;
+  word_t start_addr = expr(expr_str, &success);
+  if (!success) {
+    printf("Error: Failed to evaluate expression '%s'.\n", expr_str);
+    return 0;
+  }
+
+  // Read N memory units (4 bytes each) starting from the calculated address and print them in hexadecimal format
+  for (int i = 0; i < n; i++) {
+    word_t data = vaddr_read(start_addr + i * 4, 4);
+    printf("Memory[%#x]: %#x\n", start_addr + i * 4, data);
+  }
+
+  return 0;
+}
+
 extern bool is_hex;
 
 static int cmd_expr(char *args){
@@ -147,6 +186,7 @@ static struct {
   { "p", "Evaluate the value of an expression. Example: 'p $eax + 1'", cmd_expr },
   { "w", "Set a watchpoint. Example: 'w *0x80000000'", cmd_watch },
   { "d", "Delete a watchpoint by number. Example: 'd 2'", cmd_delete },
+  { "x", "Scan memory. Usage: 'x N EXPR'. Example: 'x 10 $esp'", cmd_x },
   /* TODO: Add more commands */
 
 };

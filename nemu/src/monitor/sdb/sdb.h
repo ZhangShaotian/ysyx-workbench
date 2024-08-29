@@ -34,4 +34,8 @@ WP* new_wp(char *expr);   // Create a new watchpoint
 void free_wp(int NO);     // Delete a watchpoint
 WP* get_head();           // Get the head of the watchpoint list
 
+// Function declarations
+word_t expr(char *e, bool *success);
+word_t vaddr_read(vaddr_t addr, int len);
+
 #endif
