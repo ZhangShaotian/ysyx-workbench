@@ -194,7 +194,7 @@ static bool make_token(char *e) {
 }
 
 // Check if the expression is surrounded by a matched pair of parentheses
-bool check_parentheses(int p, int q){
+static bool check_parentheses(int p, int q){
   if (tokens[p].type == '(' && tokens[q].type == ')' ){
     int count = 0;
     for (int i = p + 1; i < q; i++){
@@ -208,7 +208,7 @@ bool check_parentheses(int p, int q){
 }
 
 // Return the priority number of the operators to find_main_operator()
-int get_operator_priority(int type) {
+static int get_operator_priority(int type) {
   switch (type) {
     case TK_AND: return -1;
     case TK_EQ:
@@ -246,7 +246,7 @@ static const char* get_token_type_name(int type) {
 }
 
 // Return the operator position with the lowest priority
-int find_main_operator(int p, int q) {
+static int find_main_operator(int p, int q) {
   int op = -1;
   int bracket_level = 0;
   int min_priority = 100;
@@ -330,7 +330,7 @@ bool is_hex = false;
 extern word_t vaddr_read(vaddr_t addr, int len);
 
 // Evaluate the value of the expression by Divide-and-Conquer Algorithm
-word_t eval(int p, int q, bool *success){
+static word_t eval(int p, int q, bool *success){
   if (p > q) {
     printf("Error: position 'p'(leftmost) is larger than position 'q'(rightmost).\n");
     *success = false;
