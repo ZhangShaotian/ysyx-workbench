@@ -18,8 +18,11 @@ void test_expr(const char *filepath) {
   char *line = NULL;
   size_t len = 0;
   ssize_t read;
+  int passed_tests = 0;    // Track number of passed tests
+  int total_tests = 0;     // Track total number of tests
 
   while ((read = getline(&line, &len, fp)) != -1) {
+    total_tests++;  // Increment total test count
     int expected_result;
 
     // Dynamically allocate memory for expr_str based on the line length
@@ -41,6 +44,7 @@ void test_expr(const char *filepath) {
         printf("Expected Result: %d, Evaluated Result: %d\n", expected_result, result);
         if (result == expected_result) {
           printf("Result matches!\n");
+          passed_tests++;  // Increment passed test count
         } else {
           printf("Result does NOT match!\n");
           free(expr_str);
@@ -57,6 +61,14 @@ void test_expr(const char *filepath) {
 
     // Free the dynamically allocated memory for expr_str
     free(expr_str);
+  }
+  
+  // Print the summary after all tests
+  printf("Number of passed tests: %d\n", passed_tests);
+  if (passed_tests < total_tests) {
+    printf("There are failed tests.\n");  // Print if there are any failed tests
+  }else if(passed_tests == total_tests){
+    printf("There is no failed test.\n");  // Print if all tests passed
   }
 
   free(line);

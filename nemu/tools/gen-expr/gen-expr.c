@@ -20,7 +20,8 @@
 #include <assert.h>
 #include <string.h>
 
-#define BUF_SIZE 65536
+#define BUF_SIZE 65536  // Buffer
+#define MAX_DEPTH 50    // Define the maximum recursion depth
 
 // this should be enough
 static char buf[BUF_SIZE] = {};
@@ -66,20 +67,25 @@ static uint32_t choose(uint32_t n){
 }
 
 // Function to generate a random expression
-static void gen_rand_expr() {
-  //buf[0] = '\0';
+static void gen_rand_expr(int depth) {
+  // Check recursion depth and remaining buffer space to ensure the generated expression does not overflow the buffer
+  if (depth > MAX_DEPTH || strlen(buf) > BUF_SIZE - 50) {
+    gen_num(); // If recursion is too deep or the buffer is nearly full, generate a simple numeric expression
+    return;
+  }
+
   switch (choose(3)){
     case 0: gen_num();
             break;
-    case 1: gen('('); gen_rand_expr(); gen(')');
+    case 1: gen('('); gen_rand_expr(depth + 1); gen(')');
             break;
     default: 
-            gen_rand_expr(); 
+            gen_rand_expr(depth + 1); 
             gen_rand_op(); 
             if (buf[strlen(buf) - 1] == '/') {
               gen_num(); 
             } else {
-              gen_rand_expr();
+              gen_rand_expr(depth + 1);
             }
             break;
   }
@@ -94,8 +100,8 @@ int main(int argc, char *argv[]) {
   }
   int i;
   for (i = 0; i < loop; i ++) {
-    buf[0] = '\0';
-    gen_rand_expr();
+    buf[0] = '\0';    // Initialize the buffer to an empty string to prepare for a new expression since it's static
+    gen_rand_expr(0); // Initial recursion depth is 0
 
     sprintf(code_buf, code_format, buf);
 
