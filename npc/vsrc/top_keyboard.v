@@ -139,7 +139,16 @@ module top_keyboard(
           seg7_code_temp = 8'b11111111;
 				end
 			endcase
-		end
+    end else if (!rst) begin
+      seg0_code = 5'b11111;
+			seg1_code = 5'b11111;
+			seg2_code = 5'b11111;
+			seg3_code = 5'b11111;
+			seg4_code = 5'b11111;
+			seg5_code = 5'b11111;
+      seg6_code_temp = key_count % 10;
+			seg7_code_temp = (key_count / 10) % 10;
+    end
 	end
 	
 	assign seg6_code = seg6_code_temp[4:0];
