@@ -163,6 +163,29 @@ The `top_keyboard` module interfaces with a PS/2 keyboard to display the scan co
 
 Connect the `ps2_data` and `ps2_clk` to a PS/2 keyboard interface and observe the output on the seven-segment displays for the key scan and ASCII codes, as well as the total key press count.
 
+---
+
+## 9. top_sync_fifo
+
+The `top_sync_fifo` module implements a synchronous FIFO (First-In-First-Out) buffer, allowing data to be written and read in a controlled manner. The FIFO uses an 8-bit data width and provides status flags to indicate when the FIFO is full or empty.
+
+### Pin Description
+
+- **clk**: Clock signal (not used directly)
+- **button_clk (BTNC)**: Clock input controlled by a button (`BTNC`) for manual stepping through the FIFO
+- **rst (SW14)**: Reset signal, connected to switch `SW14`; resets the FIFO to its initial state
+- **din (SW0 to SW7)**: 8-bit data input bus, controlled by switches (`SW0` to `SW7`)
+- **dout (LD0 to LD7)**: 8-bit data output, displayed on the LED array (`LD0` to `LD7`)
+- **wr_en (SW12)**: Write enable signal, connected to switch `SW12`; enables writing data to the FIFO
+- **rd_en (SW13)**: Read enable signal, connected to switch `SW13`; enables reading data from the FIFO
+- **empty (LD14)**: Output flag indicating if the FIFO is empty, displayed on LED `LD14`
+- **full (LD15)**: Output flag indicating if the FIFO is full, displayed on LED `LD15`
+
+### Functionality
+
+- **Write Operation**: When `wr_en` is asserted, data from `din` is written to the FIFO on each clock cycle.
+- **Read Operation**: When `rd_en` is asserted, data is read from the FIFO and output to `dout`.
+- **Empty and Full Flags**: The `empty` flag indicates that the FIFO is empty, while the `full` flag indicates that the FIFO is full.
 
 
 
