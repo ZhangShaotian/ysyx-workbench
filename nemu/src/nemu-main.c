@@ -34,8 +34,13 @@ int main(int argc, char *argv[]) {
   /* Start engine. */
   engine_start();
   
-  /* Test expressions in the input file */
-  test_expr("/home/win/ysyx-workbench/nemu/tools/gen-expr/build/input");
+  /* Test expressions in the input file. */
+  // Expression testing is temporarily disabled.
+  // You can enable it when needed, but remember to first go to 
+  // "/home/win/ysyx-workbench/nemu/tools/gen-expr" and generate the 
+  // test cases('input' file) you want. Only then will the function work correctly.
+  // WARNING: Do NOT remove this comment below unless you are sure!
+  /* test_expr("/home/win/ysyx-workbench/nemu/tools/gen-expr/build/input"); */
 
   return is_exit_status_bad();
 }
