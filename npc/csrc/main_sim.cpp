@@ -315,6 +315,18 @@ int main() {
         top->clk = 1;
         step_and_dump_wave();
     }
+
+#elif defined(MODULE_YSYX_24080034_TOPPROCADDI)
+    // Apply reset
+    top->rst = 1;
+    step_and_dump_wave();
+    top->rst = 0;
+    step_and_dump_wave();
+
+    for (int i = 0; i < 10; i++) {
+        top->clk = 0; step_and_dump_wave();
+        top->clk = 1; step_and_dump_wave();
+    }
 #endif
 	sim_exit();
 }
