@@ -29,7 +29,7 @@ wire [31:0] imemreq_data;
 
 // Suppress Verilator warning for unused upper bits of imemreq_addr
 // Only the lower 8 bits are currently used for addressing 256-entry `imem`
-// verilator lint_on UNUSED
+// verilator lint_off UNUSED
 wire [31:0] imemreq_addr;
 // verilator lint_on UNUSED
 
