@@ -12,3 +12,5 @@
 !constr/
 !constr/*
 build/
+!hex/
+!hex/*
