@@ -1,4 +1,4 @@
-module ysyx_24080034_ImmGen(
+module ysyx_ImmGen(
 	input  wire [31:0] imm_in,   // 32-bit instruction
     input  wire [ 2:0] imm_type, // Immediate type selector
 	output wire [31:0] imm_out   // 32-bit sign-extended immediate output

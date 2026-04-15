@@ -1,4 +1,4 @@
-module ysyx_24080034_alu(
+module ysyx_alu(
     input  [31:0] in0,
     input  [31:0] in1,
     input  [ 3:0] fn,

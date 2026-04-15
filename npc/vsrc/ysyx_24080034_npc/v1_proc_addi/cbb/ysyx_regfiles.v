@@ -1,4 +1,4 @@
-module ysyx_24080034_RegisterFile_1r1w #(ADDR_WIDTH = 1, DATA_WIDTH = 1) (
+module ysyx_RegisterFile_1r1w #(ADDR_WIDTH = 1, DATA_WIDTH = 1) (
     input clk,                          // Clock signal
     input  [DATA_WIDTH-1:0] wdata,      // Write data input
     input  [ADDR_WIDTH-1:0] waddr,      // Write address input

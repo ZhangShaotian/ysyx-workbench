@@ -1,4 +1,4 @@
-module ysyx_24080034_Incrementer
+module ysyx_Incrementer
 #(
     parameter p_nbits = 1,
     parameter p_inc_value = 1

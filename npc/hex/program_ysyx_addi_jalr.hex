@@ -1,0 +1,6 @@
+01400513    // addi a0, x0, 20         a0 = 20
+010000e7    // jalr ra, x0, 16         jump to 0x10 (fun), ra = 0x08
+00c000e7    // jalr ra, x0, 12         jump to 0x0C (halt), ra = 0x0C
+00c00067    // jalr x0, x0, 12         jump to 0x0C (halt), infinite loop
+00a50513    // addi a0, a0, 10         a0 = a0 + 10 = 30
+00008067    // jalr x0, ra, 0          jump to ra (return to 0x08)

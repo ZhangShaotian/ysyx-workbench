@@ -20,7 +20,7 @@ NXDC_FILES = constr/$(TOPNAME).nxdc
 INC_PATH ?=
 
 VERILATOR = verilator
-VERILATOR_CFLAGS += -MMD --build -cc  \
+VERILATOR_CFLAGS += -MMD --build -cc -sv --timescale 1ns/1ps \
 				-O3 --x-assign fast --x-initial fast --noassert
 
 BUILD_DIR = ./build
@@ -36,9 +36,22 @@ SRC_AUTO_BIND = $(abspath $(BUILD_DIR)/auto_bind.cpp)
 $(SRC_AUTO_BIND): $(NXDC_FILES)
 	python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $^ $@
 
-# project source
-VSRCS = $(shell find $(abspath ./vsrc) -name "*.v")
+# project source (NVBoard target: all files)
+VSRCS = $(shell find $(abspath ./vsrc) -name "*.v" -or -name "*.sv")
 CSRCS = $(shell find $(abspath ./csrc) -name "main_nvboard.cpp")
+
+# ---------------------------------------------------------------------------
+# Per-version source directories for the `sim` target.
+# Each processor version lives in its own self-contained subdirectory so that
+# modules with identical names across versions never appear in the same
+# compilation unit.  Add one entry per version here.
+# ---------------------------------------------------------------------------
+NPC_VSRC_BASE := vsrc/ysyx_24080034_npc
+SIM_SRCDIR_ysyx_v1_TopProcAddi        := $(NPC_VSRC_BASE)/v1_proc_addi
+SIM_SRCDIR_ysyx_v2_TopProc_Addi_Jalr  := $(NPC_VSRC_BASE)/v2_proc_addi_jalr
+
+_SIM_SRCDIR = $(SIM_SRCDIR_$(MODULENAME))
+VSRCS_SIM   = $(shell find $(abspath $(_SIM_SRCDIR)) -name "*.v" -o -name "*.sv")
 CSRCS += $(SRC_AUTO_BIND)
 
 # rules for NVBoard
@@ -108,9 +121,9 @@ all: default
 run: check_topname $(BIN)
 	@$(BIN)
 
-sim: check_modulename $(VSRCS)
+sim: check_modulename
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	$(VERILATOR_SIM) $(VERILATOR_FLAGS_SIM) $(MAIN_MODULE) $(VSRCS)
+	$(VERILATOR_SIM) $(VERILATOR_FLAGS_SIM) $(MAIN_MODULE) $(VSRCS_SIM)
 	@echo "Simulation completed"
 	@$(OBJ_DIR)/V$(MODULENAME)
 	@gtkwave $(BUILD_DIR)/waveform.fst

@@ -1,6 +1,24 @@
-module ysyx_24080034_TopProcAddi(
+// =============================================================
+// Project:  YSYX (One Student One Chip)
+// Module:   ysyx_TopProcAddi
+// Version:  V1.0
+// Date:     2025-01-25
+// Author:   Shaotian
+//
+// Description:
+//   A single-cycle RISC-V processor implementation. 
+//   Currently in early development (Stage 1), supporting only 
+//   the I-type 'ADDI' instruction and 'EBREAK' for simulation control.
+//
+// Key Features:
+//   - 32-bit RISC-V Base ISA (subset)
+//   - Single-cycle execution (Fetch -> Decode -> Execute -> Writeback)
+//   - DPI-C integration for simulation termination
+// =============================================================
+
+module ysyx_v1_TopProcAddi(
     input clk,
-    input rst
+    input rstn
 );
 
 // -----------------------------------------------------------------------------
@@ -27,15 +45,15 @@ end
 wire [31:0] pc_in;
 wire [31:0] pc_out;
 
-ysyx_24080034_EnResetReg#(32, 32'h80000000) pc(
+ysyx_EnResetReg#(32, 32'h80000000) pc(
     .clk(clk),
-    .rst(rst),
+    .rstn(rstn),
     .d(pc_in),
     .q(pc_out),
     .en(1)
 );
 
-ysyx_24080034_Incrementer#(32, 4) pc_plus_4(
+ysyx_Incrementer#(32, 4) pc_plus_4(
     .in(pc_out),
     .out(pc_in)
 );
@@ -85,7 +103,7 @@ assign wen = (imemreq_data[6:0] == 7'b0010011) &&  // OPCODE
 // [Register File]
 // 1R1W register file: read rs1, write rd (if ADDI)
 // -----------------------------------------------------------------------------
-ysyx_24080034_RegisterFile_1r1w#(5, 32) RegFile(
+ysyx_RegisterFile_1r1w#(5, 32) RegFile(
     .clk(clk),
     .raddr(imemreq_data[19:15]),
     .rdata(alu0),
@@ -98,7 +116,7 @@ ysyx_24080034_RegisterFile_1r1w#(5, 32) RegFile(
 // [Immediate Generator]
 // Extracts immediate value for ADDI instruction
 // -----------------------------------------------------------------------------
-ysyx_24080034_ImmGen imm(
+ysyx_ImmGen imm(
 		.imm_in(imemreq_data),
 		.imm_type(imemreq_data[14:12]),
 		.imm_out(alu1)
@@ -108,7 +126,7 @@ ysyx_24080034_ImmGen imm(
 // [ALU]
 // Performs rd = rs1 + imm for ADDI
 // -----------------------------------------------------------------------------
-ysyx_24080034_alu alu(
+ysyx_alu alu(
 		.in0(alu0),
 		.in1(alu1),
 		.fn(4'b0000),
