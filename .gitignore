@@ -15,3 +15,6 @@
 /fceux-am
 /am-kernels/
 /nvboard/
+
+# Preserve local changes to independently cloned test repositories.
+!/patches/*.patch

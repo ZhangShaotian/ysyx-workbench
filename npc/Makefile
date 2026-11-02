@@ -32,11 +32,10 @@ BIN = $(BUILD_DIR)/$(TOPNAME)
 
 default: check_topname $(BIN)
 
-$(shell mkdir -p $(BUILD_DIR))
-
 # constraint file
 SRC_AUTO_BIND = $(abspath $(BUILD_DIR)/auto_bind.cpp)
 $(SRC_AUTO_BIND): $(NXDC_FILES)
+	@mkdir -p $(dir $@)
 	python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $^ $@
 
 # project source (NVBoard target: all files)
@@ -170,7 +169,7 @@ sim: check_modulename check_hex
 	@if [ "$(WAVE)" = "1" ]; then gtkwave $(SIM_WAVE_FILE); fi
 
 clean:
-	rm -rf $(BUILD_DIR)
+	rm -rf -- $(call shell_quote,$(BUILD_DIR)) scripts/__pycache__ tests/__pycache__
 .PHONY: default all clean check_topname run sim check_modulename check_hex
 	
 

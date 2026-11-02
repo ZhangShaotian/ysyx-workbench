@@ -110,7 +110,67 @@ v2 默认使用地址匹配的 `program_addi_jalr_lui.hex`。
 Makefile 调用 [scripts/run_image.py](scripts/run_image.py) 自动转换为
 `build/<MODULENAME>/image.readmemh.hex`，保留原文件内容。转换时行首字地址转换为
 `@` 字索引，不乘以 4。v3 的 ROM 和 RAM 加载同一镜像，后续 store 只更新 RAM。
-目前只识别这个 Logisim 格式，不支持任意其他 Logisim 头部或二进制文件。
+`HEX` 只识别上述文本格式，不直接接受二进制文件。AM 的 `.bin` 通过下面的运行入口转换。
+
+## 运行 AM 程序
+
+从仓库根目录执行（环境变量也可自行加入 shell 配置）：
+
+```bash
+export AM_HOME="$PWD/abstract-machine"
+export NPC_HOME="$PWD/npc"
+
+# 只编译 dummy.c
+make -C am-kernels/tests/cpu-tests ARCH=minirv-npc ALL=dummy
+
+# 编译并在 v3 上运行，默认不打开 GTKWave
+make -C am-kernels/tests/cpu-tests ARCH=minirv-npc ALL=dummy run
+
+# 可选：指定处理器、周期上限和波形窗口
+make -C am-kernels/tests/cpu-tests ARCH=minirv-npc ALL=dummy run \
+  MODULENAME=ysyx_v3_TopProc_minirv CYCLES=10000 WAVE=1
+```
+
+需要 `riscv64-linux-gnu-gcc`、对应 binutils、主机 GCC、Python 3、Make、`flock` 和 Verilator。
+Ubuntu 的交叉工具包为 `gcc-riscv64-linux-gnu`、`binutils-riscv64-linux-gnu`。
+首次编译会生成 `abstract-machine/tools/minirv/lut.bin`，这是指令转换所用的查找表，
+属于构建产物，不需要手工下载或加入 Git。
+
+当前 AM 原有版本缺少 minirv 配置，因此增补了官方
+[AM minirv 工具](https://github.com/NJU-ProjectN/abstract-machine/tree/9bc0a93c52c928a6de970f39a507be94cfb63a9f/tools/minirv)
+及 `scripts/minirv-npc.mk`，并适配本仓库旧版 Makefile；保留原有 klib 实现。
+编译器先生成 RV32E 汇编，再由该工具将非 minirv 指令替换为八条受支持指令的序列。
+仅设置 `-march=rv32e` 不足以让程序在 minirv 上运行。
+
+构建输出位于 `am-kernels/tests/cpu-tests/build/`：
+
+- `dummy-minirv-npc.elf`：符号和链接地址；`_start` 为 `0x80000000`。
+- `dummy-minirv-npc.txt`：反汇编，可查看 `main`、`_trm_init`、`halt`。
+- `dummy-minirv-npc.bin`：程序和初始数据的二进制镜像。
+- `dummy-minirv-npc.hex`：执行 `run` 时自动生成的小端 32 位字 HEX。
+
+`run` 调用 [scripts/run_am.py](scripts/run_am.py)：校验 ELF 入口和镜像大小，从 ELF 符号表
+读取 `halt` 地址，再调用现有 `make ... sim`。ROM/RAM 同时加载转换后的 HEX，
+复位 PC 和内存起点均设为 `0x80000000`。目前只有 v3 支持这个运行环境；v1/v2 无数据 RAM。
+v3 已有可配置复位 PC，无需为 AM 再改写 RTL。AM 堆上界与 v3 的 512 KiB RAM 一致；
+设备 MMIO、异常/中断尚未实现，不能据此认为所有 AM 程序均已受支持。
+
+`_trm_init()` 调用 `main()`，再调用 `halt(main的返回值)`。`halt` 保留独立函数和 `a0`
+退出参数，并包含 EBREAK；运行脚本仍使用既有的 `HALT=地址` 检查，在 ROM 的函数入口
+放置 EBREAK，确保停止位置明确。源 ELF、BIN 和 RAM 不打补丁。
+`dummy.c` 返回 0，应出现 `[RESULT] PASS: halt_pc=... a0=00000000` 和 `[dummy] PASS`。
+非零返回值报告 FAIL，达到周期上限仍未结束报告 TIMEOUT；默认上限为 1000000 周期。
+cpu-tests 外层 Makefile 会汇总失败但不一定返回非零，因此应同时查看逐项结果和 NPC 的 `[RESULT]`。
+
+运行端到端回归（真实编译 dummy、返回 1 和无限循环三个程序）：
+
+```bash
+python3 npc/tests/test_am_runtime.py  # 从仓库根目录执行
+```
+
+该测试验证 PASS、FAIL、TIMEOUT 和进程退出码，日志保存到 `npc/build/am-runtime-tests/`。
+
+## 讲义 mem/sum 的停止条件
 
 `mem` 和 `sum` 的程序、数据和栈使用零基地址，且需要 ADD 和全部四条访存指令。
 镜像约 300 KiB，运行时最高访问地址分别为 `0x51fff` 和 `0x50fff`，因此原来的 1 KiB
@@ -130,6 +190,9 @@ Makefile 调用 [scripts/run_image.py](scripts/run_image.py) 自动转换为
 ## 构建、波形和环境
 
 - 各处理器的构建产物保存在 `build/<MODULENAME>/obj_dir/`，切换无需清理缓存。
+- `make clean` 删除整个 `npc/build/`（包括各版本、测试报告、临时脚本和波形），
+  并清理 `scripts/`、`tests/` 下的 Python 缓存。仓库根目录的 `make clean` 还会清理
+  AM 和 cpu-tests/riscv-tests 的构建产物及 minirv 查找表缓存。
 - 波形保存在 `build/<MODULENAME>/waveform.fst`；同一处理器的后一次运行会覆盖它。
   如需保留不同 hex 的波形，请在下一次运行前复制保存。
 - 默认打开 GTKWave 并等待窗口关闭。`WAVE=0` 跳过打开窗口，仍生成波形。

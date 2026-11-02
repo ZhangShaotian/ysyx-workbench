@@ -1,0 +1,28 @@
+diff --git a/Makefile b/Makefile
+index 9631d22..9541461 100644
+--- a/Makefile
++++ b/Makefile
+@@ -16,12 +16,14 @@ endif
+ TEST_DIR = $(TEST_ISA:%=isa/rv$(XLEN)u%)
+ endif
+
+-ORIGINAL_TEST = $(basename $(notdir $(shell find $(TEST_DIR) -name "*.S" | sort)))
++ORIGINAL_TEST = $(if $(TEST_DIR),$(basename $(notdir $(shell find $(TEST_DIR) -name "*.S" | sort))))
+ ALL = $(filter-out $(EXCLUDE_TEST),$(ORIGINAL_TEST))
+ ALL_SRCS = $(foreach d,$(TEST_DIR),$(foreach f,$(ALL),$(wildcard $(d)/$(f).S)))
+
+ RESULT = .result
++ifneq ($(MAKECMDGOALS),clean)
+ $(shell > $(RESULT))
++endif
+
+ COLOR_RED   = \033[1;31m
+ COLOR_GREEN = \033[1;32m
+@@ -54,6 +56,6 @@ run: all
+ gdb: all
+
+ clean:
+-	rm -rf Makefile-* build/
++	rm -rf -- Makefile-* build/ $(RESULT)
+
+ .PHONY: all run gdb clean $(ALL)

@@ -19,3 +19,14 @@ image: $(IMAGE).elf
 	@$(OBJDUMP) -d $(IMAGE).elf > $(IMAGE).txt
 	@echo + OBJCOPY "->" $(IMAGE_REL).bin
 	@$(OBJCOPY) -S --set-section-flags .bss=alloc,contents -O binary $(IMAGE).elf $(IMAGE).bin
+
+# This NPC currently implements the eight-instruction minirv subset.
+ifeq ($(ARCH),minirv-npc)
+NPC_HOME ?= $(abspath $(AM_HOME)/../npc)
+MODULENAME ?= ysyx_v3_TopProc_minirv
+CYCLES ?= 1000000
+WAVE ?= 0
+run: image
+	python3 $(NPC_HOME)/scripts/run_am.py --bin $(IMAGE).bin --elf $(IMAGE).elf \
+		--nm $(CROSS_COMPILE)nm --module $(MODULENAME) --cycles $(CYCLES) --wave $(WAVE)
+endif

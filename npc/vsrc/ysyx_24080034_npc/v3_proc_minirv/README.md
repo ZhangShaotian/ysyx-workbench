@@ -27,6 +27,19 @@ make MODULENAME=ysyx_v3_TopProc_minirv HEX=hex/logisim/sum.hex sim WAVE=0
 的起始地址。`CYCLES=auto` 分别选择 1000、6000 周期。可显式覆盖，例如 `BASE=0 CYCLES=7000`。
 切换这些运行时参数不需要重新编译 RTL。Logisim 镜像由运行脚本自动转换，原文件保持不变。
 
+也支持 AM `ARCH=minirv-npc` 生成的程序，入口为 `0x80000000`。从仓库根目录执行：
+
+```bash
+export AM_HOME="$PWD/abstract-machine"
+export NPC_HOME="$PWD/npc"
+make -C am-kernels/tests/cpu-tests ARCH=minirv-npc ALL=dummy run
+```
+
+运行入口自动转换 `.bin`、从 ELF 提取 `halt` 地址并检查 a0。
+`dummy.c` 已实测通过：19 周期，`halt_pc=0x80000020`，`a0=0`。
+返回 1 和无限循环的 AM 测试分别正确报告 FAIL 和 TIMEOUT。
+详情见 [AM 程序运行说明](../../../README.md#运行-am-程序)。
+
 ## 支持的 hex 与检查点
 
 | 文件（相对于 `npc/hex/`） | 配置 / 预期结果 |

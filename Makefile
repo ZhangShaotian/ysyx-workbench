@@ -1,6 +1,22 @@
 STUID = ysyx_22040000
 STUNAME = Shaotian Zhang
 
+# This file is also included by NPC/NEMU; expose workspace cleanup only at root.
+ifeq ($(abspath $(CURDIR)),$(abspath $(dir $(lastword $(MAKEFILE_LIST)))))
+.DEFAULT_GOAL := _default
+CLEAN_PROJECTS := npc abstract-machine abstract-machine/am abstract-machine/klib \
+                  abstract-machine/tools/minirv am-kernels/tests/cpu-tests \
+                  am-kernels/tests/riscv-tests
+
+clean:
+	@set -e; for project in $(CLEAN_PROJECTS); do \
+		if [ -f "$$project/Makefile" ]; then \
+			$(MAKE) -C "$$project" clean AM_HOME="$(CURDIR)/abstract-machine"; \
+		fi; \
+	done
+.PHONY: clean
+endif
+
 # DO NOT modify the following code!!!
 
 TRACER = tracer-ysyx

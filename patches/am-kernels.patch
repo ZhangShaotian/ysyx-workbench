@@ -1,0 +1,34 @@
+diff --git a/.gitignore b/.gitignore
+index 5170a12..a02075d 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -13,3 +13,7 @@ _*
+ *~
+ build/
+ !.gitignore
++
++# Independent AM-adapted test repositories, managed by their own Git histories.
++/tests/riscv-tests/
++/tests/riscv-arch-test/
+diff --git a/tests/cpu-tests/Makefile b/tests/cpu-tests/Makefile
+index fb63e0b..f334599 100644
+--- a/tests/cpu-tests/Makefile
++++ b/tests/cpu-tests/Makefile
+@@ -1,7 +1,9 @@
+ .PHONY: all run gdb clean latest $(ALL)
+
+ RESULT = .result
++ifneq ($(MAKECMDGOALS),clean)
+ $(shell > $(RESULT))
++endif
+
+ COLOR_RED   = \033[1;31m
+ COLOR_GREEN = \033[1;32m
+@@ -30,6 +32,6 @@ run: all
+ gdb: all
+
+ clean:
+-	rm -rf Makefile.* build/
++	rm -rf -- Makefile.* build/ $(RESULT)
+
+ latest:

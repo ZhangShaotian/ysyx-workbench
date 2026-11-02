@@ -45,10 +45,9 @@ endif
 
 ## 2. General Compilation Targets
 
-### Create the destination directory (`build/$ARCH`)
+### Object recipes create the destination directory only when building.
 WORK_DIR  = $(shell pwd)
 DST_DIR   = $(WORK_DIR)/build/$(ARCH)
-$(shell mkdir -p $(DST_DIR))
 
 ### Compilation targets (a binary image or archive)
 IMAGE_REL = build/$(NAME)-$(ARCH)
@@ -152,7 +151,7 @@ image-dep: $(OBJS) $(LIBS)
 
 ### Clean a single project (remove `build/`)
 clean:
-	rm -rf Makefile.html $(WORK_DIR)/build/
+	rm -rf -- Makefile.html "$(WORK_DIR)/build/"
 .PHONY: clean
 
 ### Clean all sub-projects within depth 2 (and ignore errors)
