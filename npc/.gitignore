@@ -14,4 +14,8 @@
 !constr/*
 build/
 !hex/
-!hex/*
+!hex/**
+!tests/
+!tests/*.py
+!scripts/
+!scripts/*.py

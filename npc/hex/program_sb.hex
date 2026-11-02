@@ -1,0 +1,35 @@
+// SB test. RAM and ROM use the same image at base 0x80000000.
+// Data starts at byte address 0x80000100 (word index 0x40).
+800000b7    // lui x1, 0x80000
+10408093    // addi x1, x1, 260  // x1 = 0x80000104
+01c00e13    // addi x28, x0, 28  // store destination-field sentinel
+01d00e93    // addi x29, x0, 29  // store destination-field sentinel
+01e00f13    // addi x30, x0, 30  // store destination-field sentinel
+01f00f93    // addi x31, x0, 31  // store destination-field sentinel
+12345137    // lui x2, 0x12345  // nonzero upper bytes must not leak into RAM
+09010113    // addi x2, x2, 144
+fe208fa3    // sb x2, -1(x1)
+ffc0a183    // lw x3, -4(x1)  // verify other lanes survived
+56789137    // lui x2, 0x56789  // nonzero upper bytes must not leak into RAM
+0ab10113    // addi x2, x2, 171
+fe208f23    // sb x2, -2(x1)
+ffc0a203    // lw x4, -4(x1)  // verify other lanes survived
+13579137    // lui x2, 0x13579  // nonzero upper bytes must not leak into RAM
+0cd10113    // addi x2, x2, 205
+fe208ea3    // sb x2, -3(x1)
+ffc0a283    // lw x5, -4(x1)  // verify other lanes survived
+2468a137    // lui x2, 0x2468a  // nonzero upper bytes must not leak into RAM
+0ef10113    // addi x2, x2, 239
+fe208e23    // sb x2, -4(x1)
+ffc0a303    // lw x6, -4(x1)  // verify other lanes survived
+0000a383    // lw x7, 0(x1)  // untouched neighboring word
+000080a3    // sb x0, 1(x1)  // zero only byte lane 1
+0000a403    // lw x8, 0(x1)
+00100073    // ebreak
+
+@00000040
+12345678
+deadbeef
+
+// Expected final registers: x0=0x00000000, x1=0x80000104, x2=0x2468a0ef, x3=0x90345678, x4=0x90ab5678, x5=0x90abcd78, x6=0x90abcdef, x7=0xdeadbeef, x8=0xdead00ef, x28=0x0000001c, x29=0x0000001d, x30=0x0000001e, x31=0x0000001f
+// Expected words from 0x80000100: 0x90abcdef, 0xdead00ef

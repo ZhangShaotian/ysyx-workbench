@@ -18,8 +18,17 @@ module ysyx_inst_mem #(
     // ROM storage
     logic [DATA_W-1:0] mem [0:DEPTH-1];
 
-    // Preload from hex file at time 0
-    initial $readmemh(HEX_FILE, mem);
+    // Runtime +hex=<path> overrides the default without rebuilding the RTL.
+    initial begin : load_image
+        string image_path;
+        integer image_fd;
+        if (!$value$plusargs("hex=%s", image_path)) image_path = HEX_FILE;
+        image_fd = $fopen(image_path, "r");
+        if (image_fd == 0) $fatal(1, "Cannot open HEX file: %s", image_path);
+        $fclose(image_fd);
+        $display("[ROM] Loading %s", image_path);
+        $readmemh(image_path, mem);
+    end
 
     // Byte address -> word index. Only the lower $clog2(DEPTH) bits are
     // actually used to index the array; upper bits are silenced for lint.

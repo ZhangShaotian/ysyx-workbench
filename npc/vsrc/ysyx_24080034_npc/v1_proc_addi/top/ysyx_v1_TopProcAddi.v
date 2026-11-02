@@ -61,15 +61,18 @@ ysyx_Incrementer#(32, 4) pc_plus_4(
 // -----------------------------------------------------------------------------
 // [Instruction Memory Initialization]
 // Loads instructions from a HEX file into imem at time 0.
-// Modify the filename to switch test programs.
+// Override the image at runtime with +hex=<path> (make sim HEX=<path>).
 // -----------------------------------------------------------------------------
-initial begin
-    // Load instruction memory from a hex file into imem
-    // NOTE: Replace "hex/xxxxx.hex" with the appropriate file for your current test
-    // Examples:
-    // - hex/program.hex        // Basic test: addi x1, x0, 1; addi x2, x1, 2
-    // - hex/program_ebreak.hex // Init x0–x31 to 0–31 with ADDI, ends with ebreak for auto-stop
-    $readmemh("hex/program_ebreak.hex", imem);
+initial begin : load_image
+    string image_path;
+    integer image_fd;
+    if (!$value$plusargs("hex=%s", image_path))
+        image_path = "hex/program_ebreak.hex";
+    image_fd = $fopen(image_path, "r");
+    if (image_fd == 0) $fatal(1, "Cannot open HEX file: %s", image_path);
+    $fclose(image_fd);
+    $display("[ROM] Loading %s", image_path);
+    $readmemh(image_path, imem);
 end
 
 // -----------------------------------------------------------------------------

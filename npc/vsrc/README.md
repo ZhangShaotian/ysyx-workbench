@@ -1,5 +1,8 @@
 # TOP Modules
 
+NPC 处理器（v1/v2/v3）的 `MODULENAME`、`HEX` 参数及程序兼容性见
+[NPC 处理器仿真说明](../README.md)。下文是独立数字电路与 NVBoard 顶层模块说明。
+
 ## 0. top_running_light
 
 The `top_running_light` module controls a running light pattern on a 16-LED array. The light shifts its position in a circular manner based on a clock input, creating a running light effect.

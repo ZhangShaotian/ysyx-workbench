@@ -104,7 +104,7 @@ module ysyx_v2_TopProc_Addi_Jalr #(
         .DATA_W   (DATA_W),
         .DEPTH    (MEM_DEPTH),
         .BASE_ADDR(32'h80000000),
-        .HEX_FILE ("hex/program_ysyx_addi_jalr.hex")
+        .HEX_FILE ("hex/program_addi_jalr_lui.hex")
     ) u_inst_mem (
         .pc  (pc_out),
         .inst(inst)

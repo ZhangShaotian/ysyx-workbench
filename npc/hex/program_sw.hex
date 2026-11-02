@@ -1,0 +1,26 @@
+// SW test. RAM and ROM use the same image at base 0x80000000.
+// Data starts at byte address 0x80000100 (word index 0x40).
+800000b7    // lui x1, 0x80000
+10408093    // addi x1, x1, 260  // x1 = 0x80000104
+05500e13    // addi x28, x0, 85  // store must not write instruction bits [11:7] as rd
+06600213    // addi x4, x0, 102  // store destination-field sentinel
+12345137    // lui x2, 0x12345
+67810113    // addi x2, x2, 1656
+fe20ae23    // sw x2, -4(x1)
+ffc0a183    // lw x3, -4(x1)
+fff00113    // addi x2, x0, -1
+0020a023    // sw x2, 0(x1)
+0000a283    // lw x5, 0(x1)
+0000a223    // sw x0, 4(x1)
+0040a383    // lw x7, 4(x1)
+0080a403    // lw x8, 8(x1)  // untouched neighboring word
+00100073    // ebreak
+
+@00000040
+aaaaaaaa
+bbbbbbbb
+cccccccc
+deadbeef
+
+// Expected final registers: x0=0x00000000, x1=0x80000104, x2=0xffffffff, x3=0x12345678, x4=0x00000066, x5=0xffffffff, x7=0x00000000, x8=0xdeadbeef, x28=0x00000055
+// Expected words from 0x80000100: 0x12345678, 0xffffffff, 0x00000000, 0xdeadbeef
